@@ -46,7 +46,7 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
     Hardware2 robot           = new Hardware2();   // Use our hardware
     RPMTool launcher = new RPMTool(robot.launcher, 28);
     public static final double highGoalRPM = 2500;
-    public static final double powershotRPM = 2375;
+    public static final double powershotRPM = 2400;
     public static final double GRABBER_OPEN       =  0.2 ;
     public static final double GRABBER_CLOSED       =  0.8 ;
     public static final double TRIGGER_PRESSED       =  0.5 ;
