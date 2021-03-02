@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.Auto;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.Auto;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.MecanumDriveCancelable;
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.PoseStorage;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 
 /**
  * This opmode explains how you follow multiple trajectories in succession, asynchronously. This

@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.Tests;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.Tests;
 
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.RPMTool;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;

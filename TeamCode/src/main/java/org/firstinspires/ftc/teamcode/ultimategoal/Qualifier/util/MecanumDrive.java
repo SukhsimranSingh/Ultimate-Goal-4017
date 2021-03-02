@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -55,11 +54,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 
 /*
- * This is a modified SampleMecanumDrive class that implements the ability to cancel a trajectory
- * following. Essentially, it just forces the mode to IDLE.
+ * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class Hardware extends MecanumDrive {
+public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
@@ -100,7 +98,7 @@ public class Hardware extends MecanumDrive {
 
     private Pose2d lastPoseOnTurn;
 
-    public Hardware(HardwareMap hardwareMap) {
+    public MecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         dashboard = FtcDashboard.getInstance();
@@ -211,10 +209,6 @@ public class Hardware extends MecanumDrive {
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
         waitForIdle();
-    }
-
-    public void cancelFollowing() {
-        mode = Mode.IDLE;
     }
 
     public Pose2d getLastError() {
@@ -398,16 +392,5 @@ public class Hardware extends MecanumDrive {
     @Override
     public double getRawExternalHeading() {
         return imu.getAngularOrientation().firstAngle;
-    }
-
-    double getBatteryVoltage(HardwareMap hardwareMap) {
-        double result = Double.POSITIVE_INFINITY;
-        for (VoltageSensor sensor : hardwareMap.voltageSensor) {
-            double voltage = sensor.getVoltage();
-            if (voltage > 0) {
-                result = Math.min(result, voltage);
-            }
-        }
-        return result;
     }
 }

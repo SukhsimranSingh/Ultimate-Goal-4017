@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.TeleOp;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.TeleOp;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.RPMTool;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 /**
  * This opmode demonstrates how to create a teleop using just the SampleMecanumDrive class without

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.TeleOp;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.canvas.Canvas;
@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.MecanumDriveCancelable;
-import org.firstinspires.ftc.teamcode.ultimategoal.scrimmage.util.PoseStorage;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /**

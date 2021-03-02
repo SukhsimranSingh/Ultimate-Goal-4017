@@ -17,8 +17,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
-import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 
 
 /*
@@ -37,9 +35,6 @@ public class SkystoneExample extends LinearOpMode {
     double SS;
     SampleMecanumDrive drive;
 
-    MecanumConstraints constraints = new MecanumConstraints(
-            new DriveConstraints(70.0, 40.0, 0.0, Math.toRadians(180.0), Math.toRadians(180.0), 0.0),
-            18.9, 14.0);
 
 
     @Override
