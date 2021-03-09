@@ -25,10 +25,10 @@ public class RPMTool {
     private double lastTicks = 0;
     private double lastTime = 0;
 
-    private static double p = 1.32481;
-    private static double i = 0.13248;
-    private static double d = 0;
-    private static double f = 1.32481;
+    public static double p = 1.32481;
+    public static double i = 0.13248;
+    public static double d = 0;
+    public static double f = 1.32481;
 
 
     /*
