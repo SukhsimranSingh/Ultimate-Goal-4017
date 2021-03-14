@@ -198,12 +198,9 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
                         //do nothing
                     }
                     //Intake
-                    if (gamepad1.left_trigger > 0){
-                        intake(.5);
-                    }
-                    else {
-                        intake(0);
-                    }
+
+                    double intakePower = gamepad2.left_stick_y;
+                    intake(intakePower);
 
                     break;
                 case AUTOMATIC_CONTROL:
@@ -236,9 +233,9 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
     }
 
     public static class Hardware2 {
-        private DcMotorEx launcher = null;
-        private DcMotorEx arm = null;
-        private DcMotorEx intake = null;
+        private DcMotorEx launcher;
+        private DcMotor arm;
+        private DcMotor intake;
         private Servo grabber;
         private Servo trigger;
 
@@ -261,9 +258,9 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
             hwMap = ahwMap;
             RPMTool rpm = new RPMTool(launcher, 28);
             // Define and Initialize Motors
-            launcher  = hwMap.get(DcMotorEx.class, "left_drive");
-            intake = hwMap.get(DcMotorEx.class, "right_drive");
-            arm    = hwMap.get(DcMotorEx.class, "left_arm");
+            launcher  = hwMap.get(DcMotorEx.class, "launcher");
+            intake = hwMap.get(DcMotor.class, "intake");
+            arm    = hwMap.get(DcMotor.class, "arm");
             launcher.setDirection(DcMotor.Direction.FORWARD);
             intake.setDirection(DcMotor.Direction.REVERSE);
 
@@ -275,6 +272,7 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
             // Set all motors to run without encoders.
             // May want to use RUN_USING_ENCODERS if encoders are installed.
             launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             // Define and initialize ALL installed servos.

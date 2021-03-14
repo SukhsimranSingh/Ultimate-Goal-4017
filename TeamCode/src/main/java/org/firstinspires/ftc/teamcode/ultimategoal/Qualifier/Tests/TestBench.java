@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.Tests;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -10,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 @TeleOp(name="TestBench")
@@ -17,87 +20,121 @@ public class TestBench extends LinearOpMode {
 
     //Declare OpMode members
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotorEx motor1 = null;
-    private DcMotorEx motor2 = null;
-    private DcMotorEx motor3 = null;
-    private DcMotorEx motor4 = null;
-    private DcMotorSimple simpleMotor1 = null;
-    private DcMotorSimple simpleMotor2 = null;
-    private Servo Servo;
-    private CRServo CRservo = null;
-    DigitalChannel limitSwitch;
+    private DcMotorEx leftFront;
+    private DcMotorEx leftRear;
+    private DcMotorEx rightFront;
+    private DcMotorEx rightRear;
+    private DcMotor intake;
+    private DcMotor arm;
+
+    private Servo grabber;
+    private Servo trigger;
+
 
 
     private boolean is1YPressed = false;
     private boolean slowDrive = false;
     private double servoPosition = 0.16;
 
-    RPMTool rpm = new RPMTool(motor1, 28);
-    //Gobilda 6000 rpm motor
+
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
-        motor2 = hardwareMap.get(DcMotorEx.class, "motor2");
-        motor3 = hardwareMap.get(DcMotorEx.class, "motor3");
-        motor4 = hardwareMap.get(DcMotorEx.class, "motor4");
-        simpleMotor1 = hardwareMap.get(DcMotorSimple.class, "simpleMotor1");
-        simpleMotor2 = hardwareMap.get(DcMotorSimple.class, "simpleMotor2");
-        Servo = hardwareMap.servo.get("Servo");
-        CRservo = hardwareMap.get(CRServo.class, "CRservo");
-        limitSwitch = hardwareMap.get(DigitalChannel.class, "limitSwitch");
+        MecanumDriveCancelable drive = new MecanumDriveCancelable(hardwareMap);
+        drive.setPoseEstimate(PoseStorage.currentPose);
 
-        Servo.setPosition(servoPosition);
-        limitSwitch.setMode(DigitalChannel.Mode.INPUT);
+        DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        RPMTool rpm = new RPMTool(launcher, 28);
+        //Gobilda 6000 rpm motor
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        grabber = hardwareMap.servo.get("grabber");
+        trigger = hardwareMap.servo.get("trigger");
+
+
 
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
+            // Update the drive class
+            drive.update();
 
-            double mp1;
-            double mp2;
-            double mp3;
-            double mp4;
-            double smp1 = gamepad1.left_stick_x;
-            double smp2 = gamepad2.right_stick_y;
+            // Read pose
+            Pose2d poseEstimate = drive.getPoseEstimate();
 
-            if (gamepad1.y) {
-                if (!is1YPressed) {
-                    is1YPressed = true;
-                    slowDrive = !slowDrive;
-                } else {
-                    is1YPressed = false;
-                }
-            }
-
-            if (gamepad2.left_trigger > 0) {                                                        //Capstone Servo Control
-                servoPosition = gamepad2.left_trigger;
-//                servoPosition = Range.clip(servoPosition, .16, .75);
-            } else {
-                servoPosition = 0.16;
-            }
-            Servo.setPosition(servoPosition);
-            telemetry.addData("Servo pos: %s", Servo.getPosition());
+            // Print pose to telemetry
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
 
-            if (gamepad2.right_stick_y > 0) {
-                simpleMotor2.setPower(smp2);
+            double v0 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
+            double v1 = -1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x + (1*gamepad1.left_stick_x);
+            double v2 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
+            double v3 = -1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
+            leftFront.setPower(v0);
+            leftRear.setPower(v1);
+            rightFront.setPower(v2);
+            rightRear.setPower(v3);
+
+            //launcher speed control
+            if (gamepad1.left_bumper){
+                rpm.setRPM(2350);
             }
-            else if (gamepad2.right_stick_y < 0) {
-                simpleMotor2.setPower(smp2);
+
+            if (gamepad1.right_bumper){
+                rpm.setRPM(2500);
+            }
+
+            if (gamepad1.dpad_up){
+                rpm.setRPM(2480);
+            }
+
+            if (gamepad1.dpad_down){
+                launcher.setPower(0);
+            }
+
+            //trigger
+            if (gamepad1.right_trigger > 0){
+            trigger.setPosition(.3);
             }
             else {
-                simpleMotor2.setPower(0);
-
+                trigger.setPosition(.8);
             }
+
+
+            //ARM
+            arm.setPower(-gamepad2.right_stick_y);
+
+            //Grabber
+            if (gamepad2.left_trigger > 0) {
+                grabber.setPosition(.4);
+            }
+            else {
+                grabber.setPosition(.7);
+            }
+
+            //Intake
+            double intakePower = gamepad2.left_stick_y;
+            intake.setPower(intakePower);
+
+        }
+
+
+
+
 
 
         }
     }
-}
