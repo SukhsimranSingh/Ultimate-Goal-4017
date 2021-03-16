@@ -63,9 +63,9 @@ public class NonAugmentedTeleOp extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            -gamepad1.left_stick_y,
-                            -gamepad1.left_stick_x,
-                            -gamepad1.right_stick_x
+                            -gamepad1.right_stick_y,
+                            -gamepad1.right_stick_x,
+                            -gamepad1.left_stick_x
                     )
             );
             // Update everything. Odometry. Etc.
