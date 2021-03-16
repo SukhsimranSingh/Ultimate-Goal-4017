@@ -1,20 +1,19 @@
 package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.canvas.Canvas;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.util.Angle;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
-import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
+import org.firstinspires.ftc.teamcode.util.DashboardUtil;
 
 /**
  * This opmode demonstrates how one can augment driver control by following Road Runner arbitrary
@@ -44,15 +43,6 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
  */
 @TeleOp(group = "advanced")
 public class TeleOpAugmentedDriving4017 extends LinearOpMode {
-    Hardware2 robot           = new Hardware2();   // Use our hardware
-    RPMTool launcher = new RPMTool(robot.launcher, 28);
-    public static final double highGoalRPM = 2500;
-    public static final double powershotRPM = 2400;
-    public static final double GRABBER_OPEN       =  0.2 ;
-    public static final double GRABBER_CLOSED       =  0.8 ;
-    public static final double TRIGGER_PRESSED       =  0.5 ;
-    public static final double TRIGGER_UNPRESSED       =  0.8 ;
-
     // Define 2 states, drive control or automatic control
     enum Mode {
         DRIVER_CONTROL,
@@ -62,7 +52,7 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
     Mode currentMode = Mode.DRIVER_CONTROL;
 
     // The coordinates we want the bot to automatically go to when we press the A button
-    Vector2d targetAVector = new Vector2d(20, 30);
+    Vector2d targetAVector = new Vector2d(45, 45);
     // The heading we want the bot to end on for targetA
     double targetAHeading = Math.toRadians(90);
 
@@ -76,8 +66,6 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Initialize custom cancelable SampleMecanumDrive class
         MecanumDriveCancelable drive = new MecanumDriveCancelable(hardwareMap);
-        robot.init(hardwareMap);
-
 
         // We want to turn off velocity control for teleop
         // Velocity control per wheel is not necessary outside of motion profiled auto
@@ -105,17 +93,18 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
 
+            TelemetryPacket packet = new TelemetryPacket();
+            Canvas fieldOverlay = packet.fieldOverlay();
+
             // We follow different logic based on whether we are in manual driver control or switch
             // control to the automatic mode
             switch (currentMode) {
                 case DRIVER_CONTROL:
-                    drive.setWeightedDrivePower(
-                            new Pose2d(
-                                    -gamepad1.left_stick_y,
-                                    -gamepad1.left_stick_x,
-                                    -gamepad1.right_stick_x
-                            )
-                    );
+                    double v0 = 1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
+                    double v1 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x + (-1*gamepad1.left_stick_x);
+                    double v2 = 1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
+                    double v3 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
+                    drive.setMotorPowers(v0,v1,v2,v3);
 
                     if (gamepad1.a) {
                         // If the A button is pressed on gamepad1, we generate a splineTo()
@@ -149,60 +138,6 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     }
-
-                    //launcher speed control
-                    if (gamepad1.left_bumper){
-                        launcher.setRPM(powershotRPM);
-                    }
-
-                    if (gamepad1.right_bumper){
-                        launcher.setRPM(highGoalRPM);
-                    }
-
-                    if (gamepad1.dpad_up){
-                        launcher.setRPM(2480);
-                    }
-
-                    if (gamepad1.dpad_down){
-                        robot.launcher.setPower(0);
-                    }
-
-                    //trigger
-                    if (gamepad1.right_trigger > 0){
-                        robot.trigger.setPosition(TRIGGER_PRESSED);
-                        robot.trigger.setPosition(TRIGGER_UNPRESSED);
-                    }
-                    else {
-                        robot.trigger.setPosition(TRIGGER_UNPRESSED);
-                    }
-
-
-                    //ARM
-                    if (gamepad2.right_stick_y > 0) {
-                        armPower(.5);
-                    }
-                    else if (gamepad2.right_stick_y < 0){
-                        armPower(-.5);
-                    }
-                    else {
-                        armPower(0);
-                    }
-
-                    //Grabber
-                    if (gamepad2.left_trigger > 0) {
-                        grabber(GRABBER_OPEN);
-                    }
-                    else if (gamepad2.right_trigger > 0){
-                        grabber(GRABBER_CLOSED);
-                    }
-                    else {
-                        //do nothing
-                    }
-                    //Intake
-
-                    double intakePower = gamepad2.left_stick_y;
-                    intake(intakePower);
-
                     break;
                 case AUTOMATIC_CONTROL:
                     // If x is pressed, we break out of the automatic following
@@ -217,70 +152,20 @@ public class TeleOpAugmentedDriving4017 extends LinearOpMode {
                     }
                     break;
             }
-        }
-    }
+            fieldOverlay.setStroke("#3F51B5");
+            DashboardUtil.drawRobot(fieldOverlay, poseEstimate);
 
-    public void armPower(double power){
-        robot.arm.setPower(power);
-    }
+            // Update he localizer
+            drive.getLocalizer().update();
 
-    public void grabber(double position){
-        robot.grabber.setPosition(position);
+            // Send telemetry packet off to dashboard
+            FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
-    }
-
-    public void intake(double power){
-        robot.intake.setPower(power);
-    }
-
-    public static class Hardware2 {
-        private DcMotorEx launcher;
-        private DcMotor arm;
-        private DcMotor intake;
-        private Servo grabber;
-        private Servo trigger;
-
-
-        public static final double MID_SERVO       =  0.5 ;
-
-
-
-        HardwareMap hwMap           =  null;
-
-        /* Constructor */
-        public Hardware2() {
-        }
-
-
-
-        /* Initialize standard Hardware interfaces */
-        public void init(HardwareMap ahwMap) {
-            // Save reference to Hardware map
-            hwMap = ahwMap;
-            RPMTool rpm = new RPMTool(launcher, 28);
-            // Define and Initialize Motors
-            launcher  = hwMap.get(DcMotorEx.class, "launcher");
-            intake = hwMap.get(DcMotor.class, "intake");
-            arm    = hwMap.get(DcMotor.class, "arm");
-            launcher.setDirection(DcMotor.Direction.FORWARD);
-            intake.setDirection(DcMotor.Direction.REVERSE);
-
-            // Set all motors to zero power
-            launcher.setPower(0);
-            intake.setPower(0);
-            arm.setPower(0);
-
-            // Set all motors to run without encoders.
-            // May want to use RUN_USING_ENCODERS if encoders are installed.
-            launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            intake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
-            // Define and initialize ALL installed servos.
-            trigger = hwMap.get(Servo.class, "trigger");
-            trigger.setPosition(MID_SERVO);
-            grabber  = hwMap.get(Servo.class, "grabber");
-            grabber.setPosition(MID_SERVO);
+            // Print pose to telemetry
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
         }
     }
 }

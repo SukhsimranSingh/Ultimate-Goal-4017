@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.Hardware;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 import org.opencv.core.Core;
@@ -38,7 +39,7 @@ public class RedSideOpenCV extends LinearOpMode {
     public static final double TRIGGER_UNPRESSED       =  0.8 ;
     private ElapsedTime runtime = new ElapsedTime();
 
-    Hardware drive;
+    MecanumDriveCancelable drive;
     private OpenCvCamera webcam;
     StackDeterminationPipeline pipeline;
 
@@ -324,7 +325,7 @@ public class RedSideOpenCV extends LinearOpMode {
         pipeline = new StackDeterminationPipeline();
         webcam.setPipeline(pipeline);
 
-        drive = new Hardware(hardwareMap);
+        drive = new MecanumDriveCancelable(hardwareMap);
         robot = new Hardware2(hardwareMap);
         robot.init(hardwareMap);
 

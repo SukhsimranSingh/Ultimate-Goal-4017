@@ -90,11 +90,13 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
             // control to the automatic mode
             switch (currentMode) {
                 case DRIVER_CONTROL:
-                    double v0 = 1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
-                    double v1 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x + (-1*gamepad1.left_stick_x);
-                    double v2 = 1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
-                    double v3 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
-                    drive.setMotorPowers(v0,v1,v2,v3);
+                    drive.setWeightedDrivePower(
+                            new Pose2d(
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
+                            )
+                    );
 
                     if (gamepad1.a) {
                         // If the A button is pressed on gamepad1, we generate a splineTo()

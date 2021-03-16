@@ -31,7 +31,8 @@ public class TestBench extends LinearOpMode {
     private Servo grabber;
     private Servo trigger;
 
-
+    int ARM_UP = -40;
+    int ARM_DOWN = 40;
 
     private boolean is1YPressed = false;
     private boolean slowDrive = false;
@@ -130,12 +131,27 @@ public class TestBench extends LinearOpMode {
             double intakePower = gamepad2.left_stick_y;
             intake.setPower(intakePower);
 
+            if (gamepad2.dpad_down){
+                armPosition(ARM_DOWN);
+            }
+            if (gamepad2.dpad_up){
+                armPosition(ARM_UP);
+
+            }
+
         }
 
-
-
-
-
-
-        }
     }
+    public void armPosition (int angle){
+        int ticks = arm.getCurrentPosition();
+        int ticksPerRevInput = 28;
+        int gearRatio = 256;
+        int ticksPerRevOutput = ticksPerRevInput*gearRatio;
+        int ticksPerAngle = (int) (3.141592654/ticksPerRevOutput);
+        int target = angle * ticksPerAngle;
+
+        arm.setTargetPosition(ticks + target);
+
+
+    }
+}

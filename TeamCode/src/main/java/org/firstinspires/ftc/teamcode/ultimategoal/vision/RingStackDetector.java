@@ -88,6 +88,24 @@ public class RingStackDetector extends LinearOpMode
         final int FOUR_RING_THRESHOLD = 157;
         final int ONE_RING_THRESHOLD = 130;
 
+        /*
+         * Points which actually define the sample region rectangles, derived from above values
+         *
+         * Example of how points A and B work to define a rectangle
+         *
+         *   ------------------------------------
+         *   | (0,0) Point A                    |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                  Point B (70,50) |
+         *   ------------------------------------
+         *
+         */
+
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
                 REGION1_TOPLEFT_ANCHOR_POINT.y);

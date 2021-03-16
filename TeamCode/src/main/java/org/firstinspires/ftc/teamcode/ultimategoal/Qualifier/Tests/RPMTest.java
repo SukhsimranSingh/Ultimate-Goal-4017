@@ -16,7 +16,7 @@ public class RPMTest extends LinearOpMode {
     public void runOpMode(){
 
         DcMotorEx motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
-        motor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor1.setDirection(DcMotorSimple.Direction.FORWARD);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
