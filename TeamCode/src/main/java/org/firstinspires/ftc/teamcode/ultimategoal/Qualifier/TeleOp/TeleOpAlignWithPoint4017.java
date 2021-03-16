@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,6 +28,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  * Note: We don't call drive.update() here because it has its own field drawing functions. We don't
  * want that to interfere with our graph so we just directly update localizer instead
  */
+@Disabled
 @Config
 @TeleOp
 public class TeleOpAlignWithPoint4017 extends LinearOpMode {

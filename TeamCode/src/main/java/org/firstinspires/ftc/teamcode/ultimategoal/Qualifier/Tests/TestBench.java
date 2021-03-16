@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.Tests;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -14,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
-
+@Disabled
 @TeleOp(name="TestBench")
 public class TestBench extends LinearOpMode {
 
