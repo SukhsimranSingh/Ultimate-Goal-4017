@@ -42,7 +42,6 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
  * <p>
  * This sample utilizes the SampleMecanumDriveCancelable.java class.
  */
-@Disabled
 @TeleOp(group = "advanced")
 public class TeleOpAugmentedDriving4017 extends LinearOpMode {
     Hardware2 robot           = new Hardware2();   // Use our hardware

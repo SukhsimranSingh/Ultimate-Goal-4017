@@ -30,7 +30,6 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
  * to supercharge your code. This can be much cleaner by abstracting many of these things. This
  * opmode only serves as an initial starting point.
  */
-@Disabled
 @Autonomous(group = "advanced")
 public class SampleAsyncFollowingFSM extends LinearOpMode {
 
