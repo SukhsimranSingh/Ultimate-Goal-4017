@@ -27,6 +27,11 @@ public class TestBench extends LinearOpMode {
     private DcMotor intake;
     private DcMotor arm;
 
+    public static final double GRABBER_OPEN       =  0.2 ;
+    public static final double GRABBER_CLOSED     =  0.8 ;
+    public static final double TRIGGER_PRESSED    =  0.1 ;
+    public static final double TRIGGER_UNPRESSED  =  0.9 ;
+
     private Servo grabber;
     private Servo trigger;
 
@@ -86,69 +91,72 @@ public class TestBench extends LinearOpMode {
                             -gamepad1.left_stick_x
                     )
             );
-
             //launcher speed control
             if (gamepad1.left_bumper){
-                rpm.setRPM(2350);
+                rpm.setRPM(2800);
             }
-
             if (gamepad1.right_bumper){
+                rpm.setRPM(3000);
+            }
+            if (gamepad1.dpad_up){
                 rpm.setRPM(2500);
             }
-
-            if (gamepad1.dpad_up){
-                rpm.setRPM(2480);
-            }
-
             if (gamepad1.dpad_down){
                 launcher.setPower(0);
             }
-
             //trigger
             if (gamepad1.right_trigger > 0){
-            trigger.setPosition(.3);
+            trigger.setPosition(TRIGGER_PRESSED);
             }
             else {
-                trigger.setPosition(.8);
-            }
-
-
-            //ARM
-            arm.setPower(-gamepad2.right_stick_y);
-
-            //Grabber
-            if (gamepad2.left_trigger > 0) {
-                grabber.setPosition(.4);
-            }
-            else {
-                grabber.setPosition(.7);
+            trigger.setPosition(TRIGGER_UNPRESSED);
             }
 
             //Intake
-            double intakePower = gamepad2.left_stick_y;
-            intake.setPower(intakePower);
+            double intakePower = gamepad1.left_trigger;
+            intake.setPower(-intakePower);
+
+            //ARM
+            arm.setPower(-gamepad2.right_stick_y);
+            //Grabber
+            if (gamepad2.left_trigger > 0) {
+                grabber.setPosition(GRABBER_OPEN);
+            }
+            else {
+                grabber.setPosition(GRABBER_CLOSED);
+            }
+
 
             if (gamepad2.dpad_down){
-                armPosition(ARM_DOWN);
+                armPosition(ARM_DOWN, 2);
             }
             if (gamepad2.dpad_up){
-                armPosition(ARM_UP);
+                armPosition(ARM_UP,2);
 
             }
 
         }
 
     }
-    public void armPosition (int angle){
+    public void armPosition (int angle, double timeoutS){
         int ticks = arm.getCurrentPosition();
         int ticksPerRevInput = 28;
         int gearRatio = 256;
         int ticksPerRevOutput = ticksPerRevInput*gearRatio;
-        int ticksPerAngle = (int) (3.141592654/ticksPerRevOutput);
-        int target = angle * ticksPerAngle;
-
+        int ticksPerAngle = (int) (Math.PI/ticksPerRevOutput);
+        int target = (int) Math.toRadians(angle) * ticksPerAngle;
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         arm.setTargetPosition(ticks + target);
 
-
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+        arm.setPower(.8);
+        while (opModeIsActive() && (runtime.seconds() < timeoutS) && (arm.isBusy())) {
+            // Display it for the driver.
+            telemetry.addData("Pos",  "Running at %7d :%7d", arm.getCurrentPosition());
+            telemetry.update();
+        }
+        arm.setPower(0);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

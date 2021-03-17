@@ -37,8 +37,8 @@ public class Launcher extends LinearOpMode {
     public static final double powershotRPM = 2375;
     public static final double GRABBER_OPEN       =  0.2 ;
     public static final double GRABBER_CLOSED       =  0.8 ;
-    public static final double TRIGGER_PRESSED       =  0.5 ;
-    public static final double TRIGGER_UNPRESSED       =  0.8 ;
+    public static final double TRIGGER_PRESSED       =  0.1 ;
+    public static final double TRIGGER_UNPRESSED       =  0.9 ;
     private ElapsedTime runtime = new ElapsedTime();
     private Servo trigger;
 
