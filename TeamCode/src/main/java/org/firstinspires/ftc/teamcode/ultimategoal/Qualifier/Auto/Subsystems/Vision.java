@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.Hardware;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
+import org.firstinspires.ftc.teamcode.ultimategoal.vision.RingStackDetector;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -25,67 +26,53 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Autonomous
 public class Vision extends LinearOpMode {
-    Hardware2 robot           = new Hardware2();   // Use our hardware
-    private ElapsedTime runtime = new ElapsedTime();
-
-    MecanumDriveCancelable drive;
-    private OpenCvCamera webcam;
+    OpenCvCamera webcam;
     StackDeterminationPipeline pipeline;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void runOpMode()
+    {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         pipeline = new StackDeterminationPipeline();
         webcam.setPipeline(pipeline);
 
-        drive = new MecanumDriveCancelable(hardwareMap);
-        robot = new Hardware2(hardwareMap);
-        robot.init(hardwareMap);
+        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+        // out when the RC activity is in portrait. We do our actual image processing assuming
+        // landscape orientation, though.
+        webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+            }
+        });
 
         waitForStart();
 
-        AUTO();
-    }
+        while (opModeIsActive())
+        {
+            telemetry.addData("Analysis", pipeline.getAnalysis());
+            telemetry.addData("Position", pipeline.position);
 
-    public void AUTO() {
-        if (opModeIsActive()) {
-            double starttime = runtime.seconds();
-            while (starttime + .5 >= runtime.seconds() && opModeIsActive()) {
-                sleep(250);
-                double ringPos = pipeline.avg1;
-                telemetry.addData("Ring Pos", ringPos);
-                if (ringPos <= 135) {
-                    //none
-                    telemetry.addData("0", "rings");
-                    telemetry.update();
-                    sleep(5000);
 
-                } else if (ringPos >= 150) {
-                    //right
-                    telemetry.addData("4", "rings");
-                    telemetry.update();
-                    sleep(5000);
+            telemetry.update();
 
-                } else {
-                    //one
-                    telemetry.addData("1", "ring");
-                    telemetry.update();
-                    sleep(5000);
-
-                }
-            }
-
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
         }
     }
 
-
-    public static class StackDeterminationPipeline extends OpenCvPipeline {
+    public static class StackDeterminationPipeline extends OpenCvPipeline
+    {
         /*
          * An enum to define the ring position
          */
@@ -110,8 +97,26 @@ public class Vision extends LinearOpMode {
         static final int REGION_WIDTH = 35;
         static final int REGION_HEIGHT = 25;
 
-        final int FOUR_RING_THRESHOLD = 150;
-        final int ONE_RING_THRESHOLD = 135;
+        final int FOUR_RING_THRESHOLD = 157;
+        final int ONE_RING_THRESHOLD = 130;
+
+        /*
+         * Points which actually define the sample region rectangles, derived from above values
+         *
+         * Example of how points A and B work to define a rectangle
+         *
+         *   ------------------------------------
+         *   | (0,0) Point A                    |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                                  |
+         *   |                  Point B (70,50) |
+         *   ------------------------------------
+         *
+         */
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -187,60 +192,4 @@ public class Vision extends LinearOpMode {
             return avg1;
         }
     }
-
-    public class Hardware2 {
-        private ElapsedTime runtime = new ElapsedTime();
-        private DcMotorEx launcher = null;
-        private DcMotorEx arm = null;
-        private DcMotorEx intake = null;
-        private Servo grabber;
-        private Servo trigger;
-
-
-        public static final double MID_SERVO       =  0.5 ;
-        public static final double highGoalRPM = 2500;
-        public static final double powershotRPM = 2375;
-
-
-
-        HardwareMap hwMap           =  null;
-
-        /* Constructor */
-        public Hardware2() {
-        }
-
-        public Hardware2(HardwareMap hardwareMap) {
-        }
-
-
-        /* Initialize standard Hardware interfaces */
-        public void init(HardwareMap ahwMap) {
-            // Save reference to Hardware map
-            hwMap = ahwMap;
-            RPMTool rpm = new RPMTool(launcher, 28);
-            // Define and Initialize Motors
-            launcher  = hwMap.get(DcMotorEx.class, "left_drive");
-            intake = hwMap.get(DcMotorEx.class, "right_drive");
-            arm    = hwMap.get(DcMotorEx.class, "left_arm");
-            launcher.setDirection(DcMotor.Direction.FORWARD);
-            intake.setDirection(DcMotor.Direction.REVERSE);
-
-            // Set all motors to zero power
-            launcher.setPower(0);
-            intake.setPower(0);
-            arm.setPower(0);
-
-            // Set all motors to run without encoders.
-            // May want to use RUN_USING_ENCODERS if encoders are installed.
-            launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-            // Define and initialize ALL installed servos.
-            trigger = hwMap.get(Servo.class, "trigger");
-            trigger.setPosition(MID_SERVO);
-            grabber  = hwMap.get(Servo.class, "grabber");
-            grabber.setPosition(MID_SERVO);
-        }
-    }
-
 }

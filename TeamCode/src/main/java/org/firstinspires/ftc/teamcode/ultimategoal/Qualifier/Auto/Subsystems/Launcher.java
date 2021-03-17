@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.Hardware;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDrive;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
@@ -44,7 +45,7 @@ public class Launcher extends LinearOpMode {
     double setMotorTime = 1; // What time we set the motor power
     double setMotorWait = 1.5; // How long we wait until we launch the rings
 
-    MecanumDriveCancelable drive;
+    MecanumDrive drive;
 
 
     Pose2d startPose = new Pose2d(-63, -24, Math.toRadians(0));
@@ -90,7 +91,7 @@ public class Launcher extends LinearOpMode {
 
 
 
-        drive = new MecanumDriveCancelable(hardwareMap);
+        drive = new MecanumDrive(hardwareMap);
         robot = new Hardware2(hardwareMap);
         robot.init(hardwareMap);
 //

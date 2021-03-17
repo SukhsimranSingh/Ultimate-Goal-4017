@@ -17,7 +17,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-@Disabled
+
 @TeleOp
 public class RingStackDetector extends LinearOpMode
 {
@@ -27,7 +27,7 @@ public class RingStackDetector extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         pipeline = new StackDeterminationPipeline();
         webcam.setPipeline(pipeline);
@@ -159,6 +159,7 @@ public class RingStackDetector extends LinearOpMode
             position = RingPosition.FOUR; // Record our analysis
             if(avg1 > FOUR_RING_THRESHOLD){
                 position = RingPosition.FOUR;
+
             }else if (avg1 > ONE_RING_THRESHOLD){
                 position = RingPosition.ONE;
             }else{

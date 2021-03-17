@@ -5,8 +5,13 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 /**
  * Example opmode demonstrating how to hand-off the pose from your autonomous opmode to your teleop
@@ -32,18 +37,35 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  */
 @Autonomous(group = "advanced")
 public class AutoTransferPose extends LinearOpMode {
+    private Servo trigger;
+    private Servo grabber;
+    private DcMotorEx arm;
+    private ElapsedTime runtime = new ElapsedTime();
+    public static final double GRABBER_OPEN       =  0.1;
+    public static final double GRABBER_CLOSED       =  0.8;
+
+
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare your drive class
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
+        arm    = hardwareMap.get(DcMotorEx.class, "arm");
+
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+        RPMTool rpm = new RPMTool(launcher, 28);
+        grabber  = hardwareMap.servo.get("grabber");
+        trigger = hardwareMap.servo.get("trigger");
+
 
         // Set the pose estimate to where you know the bot will start in autonomous
         // Refer to https://www.learnroadrunner.com/trajectories.html#coordinate-system for a map
         // of the field
         // This example sets the bot at x: 10, y: 15, and facing 90 degrees (turned counter-clockwise)
-        Pose2d startPose = new Pose2d(10, 15, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-63, -24, Math.toRadians(0));
 
         drive.setPoseEstimate(startPose);
+        grabber.setPosition(GRABBER_CLOSED);
 
         waitForStart();
 
@@ -51,21 +73,85 @@ public class AutoTransferPose extends LinearOpMode {
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
-        Trajectory traj = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(45, 45), 0)
+        Trajectory zeroRingsA = drive.trajectoryBuilder(startPose)//to launch line
+                .lineTo(new Vector2d(-12,-24))
+                .build();
+        Trajectory zeroRingsB = drive.trajectoryBuilder(zeroRingsA.end())//launch rings
+                .strafeTo(new Vector2d(-12, -26))
+                .build();
+        Trajectory zeroRingsC = drive.trajectoryBuilder(zeroRingsB.end())
+                .lineToSplineHeading(new Pose2d(0,-44, Math.toRadians(180))) //drop wobble goal
                 .build();
 
-        drive.followTrajectory(traj);
+        Trajectory zeroRingsD = drive.trajectoryBuilder(zeroRingsC.end())//going to second
+                .lineTo(new Vector2d(6, -40))
+                .build();
+
+        Trajectory zeroRingsE = drive.trajectoryBuilder(zeroRingsD.end())//lining up
+                .strafeTo(new Vector2d(6,-36))
+                .build();
+
+        Trajectory zeroRingsF = drive.trajectoryBuilder(zeroRingsE.end())// second wobble
+                .lineToConstantHeading(new Vector2d(-48, -36))
+                .build();
+
+        Trajectory zeroRingsG = drive.trajectoryBuilder(zeroRingsF.end()) //drop wobble and park
+                .lineTo(new Vector2d(12, -36))
+                .build();
+
+        drive.followTrajectory(zeroRingsA);
+        drive.followTrajectory(zeroRingsB);
+        rpm.setRPM(3400);
+        sleep(5000);
+        trigger.setPosition(.8);
+        sleep(500);
+        trigger.setPosition(0.1);
+        sleep(500);
+        trigger.setPosition(.9);
+        sleep(500);
+        trigger.setPosition(0.1);
+        sleep(500);
+        trigger.setPosition(.9);
+        sleep(500);
+        trigger.setPosition(0.1);
+        sleep(500);
+        trigger.setPosition(.9);
+        sleep(500);
+        rpm.setRPM(0);
+        drive.followTrajectory(zeroRingsC);
+        armPower(-.5, 2);
+        sleep(500);
+        grabber(GRABBER_OPEN);
+        drive.followTrajectory(zeroRingsD);
+        drive.followTrajectory(zeroRingsE);
+        drive.followTrajectory(zeroRingsF);
+        sleep(500);
+        grabber(GRABBER_CLOSED);
+        sleep(500);
+        armPower(.5,1);
+        drive.followTrajectory(zeroRingsG);
+        armPower(-.5, 1);
+        sleep(500);
+        grabber(GRABBER_OPEN);
+        armPower(.5,.75);
+
 
         sleep(2000);
 
-        drive.followTrajectory(
-                drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(15, 15), Math.toRadians(180))
-                        .build()
-        );
 
         // Transfer the current pose to PoseStorage so we can use it in TeleOp
         PoseStorage.currentPose = drive.getPoseEstimate();
+    }
+    public void grabber(double position){
+        grabber.setPosition(position);
+
+    }
+    public void armPower(double power, double Time){
+        double time = runtime.seconds();
+        while (runtime.seconds()<time + Time){
+            arm.setPower(power);
+        }
+        arm.setPower(0);
+
     }
 }

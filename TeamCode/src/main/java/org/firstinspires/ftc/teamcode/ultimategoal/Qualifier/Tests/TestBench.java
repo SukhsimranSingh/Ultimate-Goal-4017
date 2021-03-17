@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
-@Disabled
 @TeleOp(name="TestBench")
 public class TestBench extends LinearOpMode {
 
@@ -80,15 +79,13 @@ public class TestBench extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.update();
-
-            double v0 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(1*gamepad1.left_stick_x);
-            double v1 = -1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x + (1*gamepad1.left_stick_x);
-            double v2 = -1*gamepad1.right_stick_y + -1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
-            double v3 = -1*gamepad1.right_stick_y + 1*gamepad1.right_stick_x +(-1*gamepad1.left_stick_x);
-            leftFront.setPower(v0);
-            leftRear.setPower(v1);
-            rightFront.setPower(v2);
-            rightRear.setPower(v3);
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.right_stick_y,
+                            -gamepad1.right_stick_x,
+                            -gamepad1.left_stick_x
+                    )
+            );
 
             //launcher speed control
             if (gamepad1.left_bumper){
