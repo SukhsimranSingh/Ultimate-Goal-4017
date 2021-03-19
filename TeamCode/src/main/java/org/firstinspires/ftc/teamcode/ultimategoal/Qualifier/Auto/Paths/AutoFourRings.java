@@ -42,7 +42,6 @@ public class AutoFourRings extends LinearOpMode {
     private Servo trigger;
     private Servo grabber;
     private DcMotorEx arm;
-    private DcMotor intake;
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
     public static final double GRABBER_CLOSED       =  0.8;
@@ -54,7 +53,6 @@ public class AutoFourRings extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
         arm    = hardwareMap.get(DcMotorEx.class, "arm");
-        intake = hardwareMap.get(DcMotor.class,"intake");
 
         launcher.setDirection(DcMotorSimple.Direction.FORWARD);
         RPMTool rpm = new RPMTool(launcher, 28);
@@ -81,39 +79,33 @@ public class AutoFourRings extends LinearOpMode {
                 .lineTo(new Vector2d(-12,-24))
                 .build();
         Trajectory fourRingsB = drive.trajectoryBuilder(fourRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-12, -26))
+                .strafeTo(new Vector2d(-10, -31))
                 .build();
-        Trajectory fourRingsC = drive.trajectoryBuilder(fourRingsB.end())
+        Trajectory fourRingsC = drive.trajectoryBuilder(fourRingsB.end())//drop wobble goal
 //                .splineToSplineHeading(new Pose2d(54,-36, Math.toRadians(0)), Math.toRadians(180))
-                .lineToSplineHeading(new Pose2d(54,-36, Math.toRadians(180))) //drop wobble goal
+                .lineToSplineHeading(new Pose2d(56,-46, Math.toRadians(180)))
                 .build();
         Trajectory fourRingsD = drive.trajectoryBuilder(fourRingsC.end())//ring stack
-                .lineToSplineHeading(new Pose2d(-27, -36, Math.toRadians(0)))
-//                .addTemporalMarker(1, () -> {
-//                    intake.setPower(-0.8);
-//                    rpm.setRPM(3000);
-//                })
-//                .addTemporalMarker(2, () -> {
-//                    intake.setPower(0);
-//                })
+                .lineToSplineHeading(new Pose2d(0, -52, Math.toRadians(90)))
                 .build();
         Trajectory fourRingsE = drive.trajectoryBuilder(fourRingsD.end())//second wobble
-                .lineToSplineHeading(new Pose2d(-48, -36, Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-48, -48))
                 .build();
-        Trajectory fourRingsF = drive.trajectoryBuilder(fourRingsE.end())// drop wobble
-                .lineToSplineHeading(new Pose2d(48, -36, Math.toRadians(0)))
+        Trajectory fourRingsF = drive.trajectoryBuilder(fourRingsE.end())//ring stack
+                .lineToConstantHeading(new Vector2d(0, -52))
                 .build();
-        Trajectory fourRingsG = drive.trajectoryBuilder(fourRingsF.end()) //park
-                .lineTo(new Vector2d(18, -36))
+        Trajectory fourRingsG = drive.trajectoryBuilder(fourRingsF.end())// drop wobble
+                .lineToSplineHeading(new Pose2d(48, -48, Math.toRadians(180)))
+                .build();
+        Trajectory fourRingsH = drive.trajectoryBuilder(fourRingsG.end()) //park
+                .lineTo(new Vector2d(12, -48))
                 .build();
 
         //TODO add auto code here
 
         drive.followTrajectory(fourRingsA);
         drive.followTrajectory(fourRingsB); //launch rings
-//        rpm.setRPM(3400);//launcher wheel rev up
-//        telemetry.addData("RPM", rpm.getRPM());
-//        telemetry.update();
+//        rpm.setRPM(2560);//launcher wheel rev up
 //        launchRings();
 //        sleep(5000);
 //        trigger.setPosition(.8);//set to launch
@@ -142,10 +134,11 @@ public class AutoFourRings extends LinearOpMode {
 //        sleep(1000);
 //        armPower(.5,1);//arm up
         drive.followTrajectory(fourRingsF);//drop second wobble
+        drive.followTrajectory(fourRingsG);
 //        armPower(-.5, 1);//arm down
 //        sleep(500);
 //        grabber(GRABBER_OPEN);
-        drive.followTrajectory(fourRingsG);//park
+        drive.followTrajectory(fourRingsH);
 //        sleep(2000);
 
         // Transfer the current pose to PoseStorage so we can use it in TeleOp
@@ -164,7 +157,7 @@ public class AutoFourRings extends LinearOpMode {
 
     }
     public void launchRings(){
-        sleep(5000);
+        sleep(3000);
         trigger.setPosition(.8);//set to launch
         sleep(500);
         trigger.setPosition(0.1);//launch
@@ -179,8 +172,5 @@ public class AutoFourRings extends LinearOpMode {
         sleep(500);
         trigger.setPosition(.9);//set to launch
         sleep(500);
-    }
-    public void intakePower(double power){
-        intake.setPower(power);
     }
 }

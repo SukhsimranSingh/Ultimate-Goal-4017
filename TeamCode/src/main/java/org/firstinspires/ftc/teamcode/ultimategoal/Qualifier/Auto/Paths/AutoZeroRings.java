@@ -163,7 +163,7 @@ public class AutoZeroRings extends LinearOpMode {
 
     }
     public void launchRings(){
-        sleep(5300);
+        sleep(3000);
         trigger.setPosition(.8);//set to launch
         sleep(500);
         trigger.setPosition(0.1);//launch

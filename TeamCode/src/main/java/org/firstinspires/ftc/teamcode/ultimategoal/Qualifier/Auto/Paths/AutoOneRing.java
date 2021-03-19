@@ -75,6 +75,11 @@ public class AutoOneRing extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        while (opModeIsActive()) {
+            telemetry.addData("RPM", rpm.getRPM());
+            telemetry.update();
+        }
+
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
         Trajectory oneRingA = drive.trajectoryBuilder(startPose)//to launch line
@@ -108,12 +113,7 @@ public class AutoOneRing extends LinearOpMode {
 //        drive.followTrajectory(oneRingA);
 //        drive.followTrajectory(oneRingB); //launch rings
 //        launchRings();
-
-        sleep(7000);
-        while (opModeIsActive()) {
-            telemetry.addData("RPM", rpm.getRPM());
-            telemetry.update();
-        }
+        sleep(3000);
 //        trigger.setPosition(.8);//set to launch
 //        sleep(500);
 //        trigger.setPosition(0.1);//launch
@@ -127,7 +127,7 @@ public class AutoOneRing extends LinearOpMode {
 //        trigger.setPosition(0.1);//launcher
 //        sleep(550);
 //        trigger.setPosition(.9);//set to launch
-        sleep(1800);
+//        sleep(250);
 //        drive.followTrajectory(oneRingC);//wobble goal 1
 //        armPower(-.5, 2.3); //arm down
 //        sleep(500);
