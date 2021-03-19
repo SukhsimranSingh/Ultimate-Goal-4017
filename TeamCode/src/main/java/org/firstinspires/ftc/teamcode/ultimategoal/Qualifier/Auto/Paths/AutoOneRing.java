@@ -45,7 +45,7 @@ public class AutoOneRing extends LinearOpMode {
     private DcMotor intake;
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
-    public static final double GRABBER_CLOSED       =  0.8;
+    public static final double GRABBER_CLOSED       =  0.9;
 
 
     @Override
@@ -81,72 +81,74 @@ public class AutoOneRing extends LinearOpMode {
                 .lineTo(new Vector2d(-12,-24))
                 .build();
         Trajectory oneRingB = drive.trajectoryBuilder(oneRingA.end())//launch rings
-                .strafeTo(new Vector2d(-12, -26))
+                .strafeTo(new Vector2d(-10, -31))
                 .build();
         Trajectory oneRingC = drive.trajectoryBuilder(oneRingB.end())
-                .lineToSplineHeading(new Pose2d(28,-32, Math.toRadians(-90))) //drop wobble goal
+                .lineToSplineHeading(new Pose2d(22,-32, Math.toRadians(-90))) //drop wobble goal
                 .build();
         Trajectory oneRingD = drive.trajectoryBuilder(oneRingC.end())//ring stack
-                .lineToSplineHeading(new Pose2d(-27, -36, Math.toRadians(0)))
-//                .addTemporalMarker(1, () -> {
-//                    intake.setPower(-0.8);
-//                    rpm.setRPM(3000);
-//                })
-//                .addTemporalMarker(2, () -> {
-//                    intake.setPower(0);
-//                })
+                .lineToSplineHeading(new Pose2d(-28, -24, Math.toRadians(180)))
                 .build();
-        Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())//second wobble
-                .lineToSplineHeading(new Pose2d(-48, -36, Math.toRadians(180)))
+        Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())//
+                .lineToConstantHeading(new Vector2d(-41, -38))
                 .build();
-        Trajectory oneRingF = drive.trajectoryBuilder(oneRingE.end())// drop wobble
-                .lineToSplineHeading(new Pose2d(24, -36, Math.toRadians(-90)))
+        Trajectory oneRingF = drive.trajectoryBuilder(oneRingE.end())// second wobble
+                .lineToConstantHeading(new Vector2d(-43, -38))
                 .build();
-        Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end()) //park
-                .lineTo(new Vector2d(12, -36))
+        Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end()) //drop wobble
+                .lineToSplineHeading(new Pose2d(16, -40, Math.toRadians(-90)))
+                .build();
+        Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end()) //park
+                .lineTo(new Vector2d(12, -40))
                 .build();
 
         //TODO add auto code here
-
-        drive.followTrajectory(oneRingA);
-        drive.followTrajectory(oneRingB); //launch rings
-//        rpm.setRPM(3400);//launcher wheel rev up
-//        telemetry.addData("RPM", rpm.getRPM());
-//        telemetry.update();
+        rpm.setRPM(2560);//launcher wheel rev up
+//        sleep(10000);
+//        drive.followTrajectory(oneRingA);
+//        drive.followTrajectory(oneRingB); //launch rings
 //        launchRings();
-//        sleep(5000);
+
+        sleep(7000);
+        while (opModeIsActive()) {
+            telemetry.addData("RPM", rpm.getRPM());
+            telemetry.update();
+        }
 //        trigger.setPosition(.8);//set to launch
 //        sleep(500);
 //        trigger.setPosition(0.1);//launch
-//        sleep(500);
+//        sleep(550);
 //        trigger.setPosition(.9);//set to launch
-//        sleep(500);
+//        sleep(250);
 //        trigger.setPosition(0.1);//launch
-//        sleep(500);
+//        sleep(550);
 //        trigger.setPosition(.9);//set to launch
-//        sleep(500);
+//        sleep(250);
 //        trigger.setPosition(0.1);//launcher
-//        sleep(500);
+//        sleep(550);
 //        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-//        rpm.setRPM(0);
-        drive.followTrajectory(oneRingC);//wobble goal 1
+        sleep(1800);
+//        drive.followTrajectory(oneRingC);//wobble goal 1
 //        armPower(-.5, 2.3); //arm down
 //        sleep(500);
 //        grabber(GRABBER_OPEN);
 //        armPower(.5,1);//arm up
-        drive.followTrajectory(oneRingD);//ring stack
-        drive.followTrajectory(oneRingE);//second wobble
-//        armPower(-.5, 1);//arm down
+//        drive.followTrajectory(oneRingD);//ring stack
+//        drive.followTrajectory(oneRingE);
 //        sleep(500);
+//        armPower(-.5, 1.2);//arm down
+//        drive.followTrajectory(oneRingF);//second wobble
+//        sleep(1000);
 //        grabber(GRABBER_CLOSED);
 //        sleep(1000);
 //        armPower(.5,1);//arm up
-        drive.followTrajectory(oneRingF);//drop second wobble
+//        drive.followTrajectory(oneRingG);//drop second wobble
 //        armPower(-.5, 1);//arm down
 //        sleep(500);
 //        grabber(GRABBER_OPEN);
-        drive.followTrajectory(oneRingG);//park
+//        sleep(500);
+//        armPower(.5,1);//arm up
+//        drive.followTrajectory(oneRingH);//park
 //        sleep(2000);
 
 

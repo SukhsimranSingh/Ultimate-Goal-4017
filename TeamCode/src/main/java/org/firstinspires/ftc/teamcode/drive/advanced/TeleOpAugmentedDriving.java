@@ -7,6 +7,12 @@ import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 /**
  * This opmode demonstrates how one can augment driver control by following Road Runner arbitrary
@@ -42,6 +48,22 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
         AUTOMATIC_CONTROL
     }
 
+    private ElapsedTime runtime = new ElapsedTime();
+    private DcMotorEx leftFront;
+    private DcMotorEx leftRear;
+    private DcMotorEx rightFront;
+    private DcMotorEx rightRear;
+    private DcMotor intake;
+    private DcMotor arm;
+
+    public static final double GRABBER_OPEN       =  0.2 ;
+    public static final double GRABBER_CLOSED     =  0.9 ;
+    public static final double TRIGGER_PRESSED    =  0.1 ;
+    public static final double TRIGGER_UNPRESSED  =  0.9 ;
+
+    private Servo grabber;
+    private Servo trigger;
+
     Mode currentMode = Mode.DRIVER_CONTROL;
 
     // The coordinates we want the bot to automatically go to when we press the A button
@@ -67,6 +89,20 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
         drive.setPoseEstimate(PoseStorage.currentPose);
+        DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
+        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        RPMTool rpm = new RPMTool(launcher, 28);
+        //Gobilda 6000 rpm motor
+
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        grabber = hardwareMap.servo.get("grabber");
+        trigger = hardwareMap.servo.get("trigger");
 
         waitForStart();
 
@@ -130,6 +166,40 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     }
+                    if (gamepad1.left_bumper){
+                        rpm.setRPM(2800);
+                    }
+                    if (gamepad1.right_bumper){
+                        rpm.setRPM(3000);
+                    }
+                    if (gamepad1.dpad_up){
+                        rpm.setRPM(2500);
+                    }
+                    if (gamepad1.dpad_down){
+                        launcher.setPower(0);
+                    }
+                    //trigger
+                    if (gamepad1.right_trigger > 0){
+                        trigger.setPosition(TRIGGER_PRESSED);
+                    }
+                    else {
+                        trigger.setPosition(TRIGGER_UNPRESSED);
+                    }
+
+                    //Intake
+                    double intakePower = gamepad1.left_trigger;
+                    intake.setPower(intakePower);
+
+                    //ARM
+                    arm.setPower(gamepad2.right_stick_y);
+                    //Grabber
+                    if (gamepad2.left_trigger > 0) {
+                        grabber.setPosition(GRABBER_OPEN);
+                    }
+                    else {
+                        grabber.setPosition(GRABBER_CLOSED);
+                    }
+
                     break;
                 case AUTOMATIC_CONTROL:
                     // If x is pressed, we break out of the automatic following

@@ -3,20 +3,29 @@ package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.Tests;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-@Disabled
+import com.qualcomm.robotcore.hardware.Servo;
+@Config
 @TeleOp(name = "rpmTest")
 public class RPMTest extends LinearOpMode {
+    public static final double TRIGGER_PRESSED    =  0.1 ;
+    public static final double TRIGGER_UNPRESSED  =  0.8 ;
+    public static double RPM = 2500;
+    private Servo trigger;
+
 
     public void runOpMode(){
 
-        DcMotorEx motor1 = hardwareMap.get(DcMotorEx.class, "motor1");
+        DcMotorEx motor1 = hardwareMap.get(DcMotorEx.class, "launcher");
         motor1.setDirection(DcMotorSimple.Direction.FORWARD);
+        trigger = hardwareMap.servo.get("trigger");
+
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -29,24 +38,27 @@ public class RPMTest extends LinearOpMode {
         while(!isStopRequested()){
 
             if (gamepad1.a){
-                rpm.setRPM(2375);
+                rpm.setRPM(RPM);
             }
 
             if (gamepad1.b){
 
-                rpm.setRPM(2480);
+                rpm.setRPM(3000);
             }
 
             if (gamepad1.dpad_up){
-                rpm.setRPM(2500);
+                rpm.setRPM(2250);
             }
 
             if (gamepad1.x){
                 motor1.setPower(0);
             }
-            if (gamepad1.left_trigger > 0) {                                                        //Capstone Servo Control
-                double mP1 = gamepad1.left_trigger;
-                motor1.setPower(mP1);
+            //trigger
+            if (gamepad1.right_trigger > 0){
+                trigger.setPosition(TRIGGER_PRESSED);
+            }
+            else {
+                trigger.setPosition(TRIGGER_UNPRESSED);
             }
 
             telemetry.addData(" Current rpm", rpm.getRPM());

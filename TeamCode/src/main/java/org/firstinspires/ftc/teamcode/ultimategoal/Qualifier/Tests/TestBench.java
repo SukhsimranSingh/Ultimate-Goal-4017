@@ -114,10 +114,10 @@ public class TestBench extends LinearOpMode {
 
             //Intake
             double intakePower = gamepad1.left_trigger;
-            intake.setPower(-intakePower);
+            intake.setPower(intakePower);
 
             //ARM
-            arm.setPower(-gamepad2.right_stick_y);
+            arm.setPower(gamepad2.right_stick_y);
             //Grabber
             if (gamepad2.left_trigger > 0) {
                 grabber.setPosition(GRABBER_OPEN);

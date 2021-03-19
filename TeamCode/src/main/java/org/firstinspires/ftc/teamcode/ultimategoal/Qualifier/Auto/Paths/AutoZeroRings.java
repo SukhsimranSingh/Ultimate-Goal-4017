@@ -43,7 +43,7 @@ public class AutoZeroRings extends LinearOpMode {
     private DcMotorEx arm;
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
-    public static final double GRABBER_CLOSED       =  0.8;
+    public static final double GRABBER_CLOSED       =  1.0;
 
 
     @Override
@@ -81,7 +81,7 @@ public class AutoZeroRings extends LinearOpMode {
 //                })
                 .build();
         Trajectory zeroRingsB = drive.trajectoryBuilder(zeroRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-12, -26))
+                .strafeTo(new Vector2d(-10, -31))
                 .build();
         Trajectory zeroRingsC = drive.trajectoryBuilder(zeroRingsB.end())
                 .lineToSplineHeading(new Pose2d(0,-44, Math.toRadians(180))) //drop wobble goal
@@ -92,11 +92,11 @@ public class AutoZeroRings extends LinearOpMode {
                 .build();
 
         Trajectory zeroRingsE = drive.trajectoryBuilder(zeroRingsD.end())//lining up
-                .strafeTo(new Vector2d(6,-36))
+                .strafeTo(new Vector2d(6,-38))
                 .build();
 
         Trajectory zeroRingsF = drive.trajectoryBuilder(zeroRingsE.end())// second wobble
-                .lineToConstantHeading(new Vector2d(-48, -36))
+                .lineToConstantHeading(new Vector2d(-48, -37))
                 .build();
 
         Trajectory zeroRingsG = drive.trajectoryBuilder(zeroRingsF.end()) //drop wobble and park
@@ -107,7 +107,7 @@ public class AutoZeroRings extends LinearOpMode {
 
         drive.followTrajectory(zeroRingsA);
         drive.followTrajectory(zeroRingsB); //launch rings
-        rpm.setRPM(3400);//launcher wheel rev up
+        rpm.setRPM(2560);//launcher wheel rev up
         telemetry.addData("RPM", rpm.getRPM());
         telemetry.update();
         launchRings();
@@ -139,9 +139,10 @@ public class AutoZeroRings extends LinearOpMode {
         sleep(1000);
         armPower(.5,1);//arm up
         drive.followTrajectory(zeroRingsG);
-        armPower(-.5, 1);//arm down
+        armPower(-.5, .75);//arm down
         sleep(500);
         grabber(GRABBER_OPEN);
+        armPower(.5,1);//arm up
         sleep(2000);
 
 
@@ -162,20 +163,20 @@ public class AutoZeroRings extends LinearOpMode {
 
     }
     public void launchRings(){
-        sleep(5000);
+        sleep(5300);
         trigger.setPosition(.8);//set to launch
         sleep(500);
         trigger.setPosition(0.1);//launch
         sleep(500);
-        trigger.setPosition(.9);//set to launch
+        trigger.setPosition(.8);//set to launch
         sleep(500);
         trigger.setPosition(0.1);//launch
         sleep(500);
-        trigger.setPosition(.9);//set to launch
+        trigger.setPosition(.8);//set to launch
         sleep(500);
         trigger.setPosition(0.1);//launcher
         sleep(500);
-        trigger.setPosition(.9);//set to launch
+        trigger.setPosition(.8);//set to launch
         sleep(500);
     }
 }
