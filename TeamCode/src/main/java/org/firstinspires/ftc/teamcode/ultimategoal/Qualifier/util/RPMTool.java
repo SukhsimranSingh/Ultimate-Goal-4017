@@ -84,7 +84,7 @@ public class RPMTool {
         double ticksPerSec = targetRPM * TICKS_PER_REVOLUTION / 60;
 
         // set velocity
-        motor.setVelocityPIDFCoefficients(p,i,d,f);
+//        motor.setVelocityPIDFCoefficients(p,i,d,f);
         motor.setVelocity(ticksPerSec);
     }
 
