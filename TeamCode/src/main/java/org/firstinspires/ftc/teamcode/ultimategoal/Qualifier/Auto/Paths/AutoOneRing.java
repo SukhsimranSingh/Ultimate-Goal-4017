@@ -109,10 +109,10 @@ public class AutoOneRing extends LinearOpMode {
 
         //TODO add auto code here
         rpm.setRPM(2560);//launcher wheel rev up
-//        sleep(10000);
-//        drive.followTrajectory(oneRingA);
-//        drive.followTrajectory(oneRingB); //launch rings
-//        launchRings();
+        sleep(1000);
+        drive.followTrajectory(oneRingA);
+        drive.followTrajectory(oneRingB); //launch rings
+        launchRings();
         sleep(3000);
 //        trigger.setPosition(.8);//set to launch
 //        sleep(500);

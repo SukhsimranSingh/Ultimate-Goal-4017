@@ -108,9 +108,12 @@ public class AutoTest extends LinearOpMode {
         // Make sure the start pose matches with the localizer's start pose
         Trajectory zeroRingsA = drive.trajectoryBuilder(startPose)//to launch line
                 .lineTo(new Vector2d(-12,-24))
+//                .addTemporalMarker(.5, () -> {
+//                    rpm.setRPM(3000);
+//                })
                 .build();
         Trajectory zeroRingsB = drive.trajectoryBuilder(zeroRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-12, -26))
+                .strafeTo(new Vector2d(-10, -31))
                 .build();
         Trajectory zeroRingsC = drive.trajectoryBuilder(zeroRingsB.end())
                 .lineToSplineHeading(new Pose2d(0,-44, Math.toRadians(180))) //drop wobble goal
@@ -121,11 +124,11 @@ public class AutoTest extends LinearOpMode {
                 .build();
 
         Trajectory zeroRingsE = drive.trajectoryBuilder(zeroRingsD.end())//lining up
-                .strafeTo(new Vector2d(6,-36))
+                .strafeTo(new Vector2d(6,-38))
                 .build();
 
         Trajectory zeroRingsF = drive.trajectoryBuilder(zeroRingsE.end())// second wobble
-                .lineToConstantHeading(new Vector2d(-48, -36))
+                .lineToConstantHeading(new Vector2d(-48, -37))
                 .build();
 
         Trajectory zeroRingsG = drive.trajectoryBuilder(zeroRingsF.end()) //drop wobble and park

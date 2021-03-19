@@ -67,15 +67,15 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     Mode currentMode = Mode.DRIVER_CONTROL;
 
     // The coordinates we want the bot to automatically go to when we press the A button
-    Vector2d targetAVector = new Vector2d(0, -24);
+    Vector2d targetAVector = new Vector2d(-10, -31);
     // The heading we want the bot to end on for targetA
     double targetAHeading = Math.toRadians(0);
 
     // The location we want the bot to automatically go to when we press the B button
-    Vector2d targetBVector = new Vector2d(0, -34);
+    Vector2d targetBVector = new Vector2d(-10, -31);
 
     // The angle we want to align to when we press Y
-    double targetAngle = Math.toRadians(30);
+    double targetAngle = Math.toRadians(10);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -167,13 +167,13 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     }
                     if (gamepad1.left_bumper){
-                        rpm.setRPM(2800);
+                        rpm.setRPM(2560);
                     }
                     if (gamepad1.right_bumper){
                         rpm.setRPM(3000);
                     }
                     if (gamepad1.dpad_up){
-                        rpm.setRPM(2500);
+                        rpm.setRPM(2300);
                     }
                     if (gamepad1.dpad_down){
                         launcher.setPower(0);

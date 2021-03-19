@@ -44,7 +44,7 @@ public class AutoFourRings extends LinearOpMode {
     private DcMotorEx arm;
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
-    public static final double GRABBER_CLOSED       =  0.8;
+    public static final double GRABBER_CLOSED       =  0.9;
 
 
     @Override
@@ -73,6 +73,11 @@ public class AutoFourRings extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+        while (opModeIsActive()) {
+            telemetry.addData("RPM", rpm.getRPM());
+            telemetry.update();
+        }
+
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
         Trajectory fourRingsA = drive.trajectoryBuilder(startPose)//to launch line
@@ -89,7 +94,7 @@ public class AutoFourRings extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(0, -52, Math.toRadians(90)))
                 .build();
         Trajectory fourRingsE = drive.trajectoryBuilder(fourRingsD.end())//second wobble
-                .lineToConstantHeading(new Vector2d(-48, -48))
+                .lineToConstantHeading(new Vector2d(-36, -48))
                 .build();
         Trajectory fourRingsF = drive.trajectoryBuilder(fourRingsE.end())//ring stack
                 .lineToConstantHeading(new Vector2d(0, -52))

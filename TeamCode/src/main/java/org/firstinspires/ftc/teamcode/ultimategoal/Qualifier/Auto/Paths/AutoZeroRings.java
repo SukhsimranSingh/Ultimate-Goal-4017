@@ -71,6 +71,10 @@ public class AutoZeroRings extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
+        while (opModeIsActive()) {
+            telemetry.addData("RPM", rpm.getRPM());
+            telemetry.update();
+        }
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
@@ -106,10 +110,8 @@ public class AutoZeroRings extends LinearOpMode {
         //TODO add auto code here
 
         drive.followTrajectory(zeroRingsA);
-        drive.followTrajectory(zeroRingsB); //launch rings
         rpm.setRPM(2560);//launcher wheel rev up
-        telemetry.addData("RPM", rpm.getRPM());
-        telemetry.update();
+        drive.followTrajectory(zeroRingsB); //launch rings
         launchRings();
 //        sleep(5000);
 //        trigger.setPosition(.8);//set to launch
