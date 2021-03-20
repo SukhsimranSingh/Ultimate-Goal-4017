@@ -59,7 +59,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     public static final double GRABBER_OPEN       =  0.2 ;
     public static final double GRABBER_CLOSED     =  0.9 ;
     public static final double TRIGGER_PRESSED    =  0.1 ;
-    public static final double TRIGGER_UNPRESSED  =  0.9 ;
+    public static final double TRIGGER_UNPRESSED  =  0.8 ;
 
     private Servo grabber;
     private Servo trigger;
@@ -120,6 +120,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("RPM", rpm.getRPM());
             telemetry.update();
 
             // We follow different logic based on whether we are in manual driver control or switch
@@ -128,9 +129,9 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                 case DRIVER_CONTROL:
                     drive.setWeightedDrivePower(
                             new Pose2d(
-                                    -gamepad1.right_stick_y,
-                                    -gamepad1.right_stick_x,
-                                    -gamepad1.left_stick_x
+                                    -gamepad1.left_stick_y,
+                                    -gamepad1.left_stick_x,
+                                    -gamepad1.right_stick_x
                             )
                     );
 
@@ -150,10 +151,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         // If the B button is pressed on gamepad1, we generate a lineTo()
                         // trajectory on the fly and follow it
                         // We switch the state to AUTOMATIC_CONTROL
-                        Trajectory fourRingA = drive.trajectoryBuilder(poseEstimate)//to launch line
-                                .lineTo(new Vector2d(-12,-24))
-                                .build();
-                        Trajectory fourRingB = drive.trajectoryBuilder(fourRingA.end())//launch rings
+                        Trajectory fourRingB = drive.trajectoryBuilder(poseEstimate)//launch rings
                                 .strafeTo(new Vector2d(-3, -16))
                                 .build();
                         Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
@@ -164,7 +162,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                                 .build();
 
                         rpm.setRPM(2259);//launcher wheel rev up
-                        drive.followTrajectory(fourRingA);
                         drive.followTrajectory(fourRingB); //launch rings
                         sleep(750);
                         trigger.setPosition(.8);//set to launch
@@ -183,11 +180,11 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         sleep(550);
                         trigger.setPosition(.9);
 
-                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-                                .lineTo(targetBVector)
-                                .build();
+//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
+//                                .lineTo(targetBVector)
+//                                .build();
 
-                        drive.followTrajectoryAsync(traj1);
+//                        drive.followTrajectoryAsync(traj1);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if (gamepad1.y) {
@@ -202,10 +199,10 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         rpm.setRPM(2560);
                     }
                     if (gamepad1.right_bumper){
-                        rpm.setRPM(3000);
+                        rpm.setRPM(2700);
                     }
                     if (gamepad1.dpad_up){
-                        rpm.setRPM(2300);
+                        rpm.setRPM(2259);
                     }
                     if (gamepad1.dpad_down){
                         launcher.setPower(0);

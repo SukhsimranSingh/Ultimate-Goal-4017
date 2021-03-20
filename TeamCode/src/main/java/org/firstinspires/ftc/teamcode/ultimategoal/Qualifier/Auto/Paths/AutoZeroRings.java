@@ -102,15 +102,15 @@ public class AutoZeroRings extends LinearOpMode {
                 .lineTo(new Vector2d(6, -40))
                 .build();
 
-        Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingD.end())//lining up
+        Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingF.end())//lining up
                 .strafeTo(new Vector2d(6,-38))
                 .build();
 
-        Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingE.end())// second wobble
+        Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingG.end())// second wobble
                 .lineToConstantHeading(new Vector2d(-48, -37))
                 .build();
 
-        Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingF.end()) //drop wobble and park
+        Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingH.end()) //drop wobble and park
                 .lineTo(new Vector2d(12, -36))
                 .build();
 

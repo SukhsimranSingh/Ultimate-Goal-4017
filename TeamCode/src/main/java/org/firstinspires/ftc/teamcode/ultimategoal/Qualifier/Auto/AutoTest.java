@@ -106,52 +106,237 @@ public class AutoTest extends LinearOpMode {
         if (isStopRequested()) return;
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
-        Trajectory zeroRingsA = drive.trajectoryBuilder(startPose)//to launch line
+        Trajectory zeroRingA = drive.trajectoryBuilder(startPose)//to launch line
                 .lineTo(new Vector2d(-12,-24))
 //                .addTemporalMarker(.5, () -> {
 //                    rpm.setRPM(3000);
 //                })
                 .build();
-        Trajectory zeroRingsB = drive.trajectoryBuilder(zeroRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-10, -31))
+        Trajectory zeroRingB = drive.trajectoryBuilder(zeroRingA.end())//launch rings
+                .strafeTo(new Vector2d(-3, -16))
                 .build();
-        Trajectory zeroRingsC = drive.trajectoryBuilder(zeroRingsB.end())
+        Trajectory zeroRingC = drive.trajectoryBuilder(zeroRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory zeroRingD = drive.trajectoryBuilder(zeroRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+
+        Trajectory zeroRingE = drive.trajectoryBuilder(zeroRingD.end())
                 .lineToSplineHeading(new Pose2d(0,-44, Math.toRadians(180))) //drop wobble goal
                 .build();
 
-        Trajectory zeroRingsD = drive.trajectoryBuilder(zeroRingsC.end())//going to second
+        Trajectory zeroRingF = drive.trajectoryBuilder(zeroRingE.end())//going to second
                 .lineTo(new Vector2d(6, -40))
                 .build();
 
-        Trajectory zeroRingsE = drive.trajectoryBuilder(zeroRingsD.end())//lining up
+        Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingF.end())//lining up
                 .strafeTo(new Vector2d(6,-38))
                 .build();
 
-        Trajectory zeroRingsF = drive.trajectoryBuilder(zeroRingsE.end())// second wobble
+        Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingG.end())// second wobble
                 .lineToConstantHeading(new Vector2d(-48, -37))
                 .build();
 
-        Trajectory zeroRingsG = drive.trajectoryBuilder(zeroRingsF.end()) //drop wobble and park
+        Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingH.end()) //drop wobble and park
+                .lineTo(new Vector2d(12, -36))
+                .build();
+
+        Trajectory oneRingA = drive.trajectoryBuilder(startPose)//to launch line
+                .lineTo(new Vector2d(-12,-24))
+                .build();
+        Trajectory oneRingB = drive.trajectoryBuilder(oneRingA.end())//launch rings
+                .strafeTo(new Vector2d(-3, -16))
+                .build();
+        Trajectory oneRingC = drive.trajectoryBuilder(oneRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory oneRingD = drive.trajectoryBuilder(oneRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+        Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())
+                .lineToSplineHeading(new Pose2d(22,-32, Math.toRadians(-90))) //drop wobble goal
+                .build();
+        Trajectory oneRingF = drive.trajectoryBuilder(oneRingE.end())//ring stack
+                .lineToSplineHeading(new Pose2d(-28, -24, Math.toRadians(180)))
+                .build();
+        Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end())//
+                .lineToConstantHeading(new Vector2d(-41, -38))
+                .build();
+        Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end())// second wobble
+                .lineToConstantHeading(new Vector2d(-43, -38))
+                .build();
+        Trajectory oneRingI = drive.trajectoryBuilder(oneRingH.end()) //drop wobble
+                .lineToSplineHeading(new Pose2d(16, -40, Math.toRadians(-90)))
+                .build();
+        Trajectory oneRingJ = drive.trajectoryBuilder(oneRingI.end()) //park
+                .lineTo(new Vector2d(12, -40))
+                .build();
+
+        Trajectory fourRingA = drive.trajectoryBuilder(startPose)//to launch line
+                .lineTo(new Vector2d(-12,-24))
+                .build();
+        Trajectory fourRingB = drive.trajectoryBuilder(fourRingA.end())//launch rings
+                .strafeTo(new Vector2d(-3, -16))
+                .build();
+        Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory fourRingD = drive.trajectoryBuilder(fourRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+        Trajectory fourRingDa = drive.trajectoryBuilder(fourRingD.end())//drop wobble goal
+                .lineToSplineHeading(new Pose2d(-3,-46, Math.toRadians(180)))
+                .build();
+        Trajectory fourRingE = drive.trajectoryBuilder(fourRingDa.end())//drop wobble goal
+                .lineToSplineHeading(new Pose2d(54,-46, Math.toRadians(180)))
+                .build();
+        Trajectory fourRingF = drive.trajectoryBuilder(fourRingE.end())//ring stack
+                .lineToSplineHeading(new Pose2d(0, -54, Math.toRadians(90)))
+                .build();
+        Trajectory fourRingG = drive.trajectoryBuilder(fourRingF.end())//second wobble
+                .lineToConstantHeading(new Vector2d(-35, -55))
+                .build();
+        Trajectory fourRingH = drive.trajectoryBuilder(fourRingG.end())//ring stack
+                .lineToConstantHeading(new Vector2d(0, -52))
+                .build();
+        Trajectory fourRingI = drive.trajectoryBuilder(fourRingH.end())// drop wobble
+                .lineToSplineHeading(new Pose2d(46, -36, Math.toRadians(180)))
+                .build();
+        Trajectory fourRingJ = drive.trajectoryBuilder(fourRingI.end()) //park
                 .lineTo(new Vector2d(12, -36))
                 .build();
 
         //TODO add auto code here
     while (opModeIsActive()) {
-        sleep(1000);
+        sleep(500);
+        telemetry.addData("Analysis", pipeline.getAnalysis());
+        telemetry.addData("Position", pipeline.position);
+        telemetry.addData("RPM", rpm.getRPM());
+        telemetry.update();
         if (pipeline.position == StackDeterminationPipeline.RingPosition.NONE) {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.addData("RPM", rpm.getRPM());
-            telemetry.update();
-
+            rpm.setRPM(2255);//launcher wheel rev up
+            drive.followTrajectory(zeroRingA);
+            drive.followTrajectory(zeroRingB); //launch rings
+            sleep(550);
+            trigger.setPosition(.8);//set to launch
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(zeroRingC); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(zeroRingD); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            rpm.setRPM(0);
+            drive.followTrajectory(zeroRingE);//wobble goal 1
+            armPower(-.8, 1.2); //arm down
+            sleep(500);
+            grabber(GRABBER_OPEN);
+            drive.followTrajectory(zeroRingF);
+            drive.followTrajectory(zeroRingG);
+            drive.followTrajectory(zeroRingH);
+            sleep(500);
+            grabber(GRABBER_CLOSED);
+            sleep(1000);
+            armPower(.7,.8);//arm up
+            drive.followTrajectory(zeroRingI);
+            armPower(-.7, .7);//arm down
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
+            sleep(2000);
         } else if (pipeline.position == StackDeterminationPipeline.RingPosition.ONE) {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.update();
+            rpm.setRPM(2255);//launcher wheel rev up
+            drive.followTrajectory(oneRingA);
+            drive.followTrajectory(oneRingB); //launch rings
+            sleep(550);
+            trigger.setPosition(.8);//set to launch
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(oneRingC); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(oneRingD); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            rpm.setRPM(0);
+            drive.followTrajectory(oneRingE);//wobble goal 1
+            armPower(-.8, 1.2); //arm down
+            sleep(250);
+            grabber(GRABBER_OPEN);
+            armPower(.7,.75);//arm up
+            drive.followTrajectory(oneRingF);//ring stack
+            drive.followTrajectory(oneRingG);
+            armPower(-.8,.8);//arm DOWN
+            drive.followTrajectory(oneRingH);//second wobble
+            grabber(GRABBER_CLOSED);
+            sleep(250);
+            armPower(.7,.8);//arm up
+            drive.followTrajectory(oneRingI);//drop second wobble
+            armPower(-.7, .7);//arm down
+            sleep(500);
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
+            drive.followTrajectory(oneRingJ);//park
+            sleep(2000);
         } else {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.update();
+            rpm.setRPM(2259);//launcher wheel rev up
+            drive.followTrajectory(fourRingA);
+            drive.followTrajectory(fourRingB); //launch rings
+            sleep(750);
+            trigger.setPosition(.8);//set to launch
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(fourRingC); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            drive.followTrajectory(fourRingD); //launch rings
+            sleep(500);
+            trigger.setPosition(0.1);//launch
+            sleep(550);
+            trigger.setPosition(.9);
+            rpm.setRPM(0);
+            drive.followTrajectory(fourRingDa);
+            drive.followTrajectory(fourRingE);//wobble goal 1
+            armPower(-.8, 1.2); //arm down
+            grabber(GRABBER_OPEN);
+            sleep(600);
+            armPower(.7,.75);//arm up
+            drive.followTrajectory(fourRingF);//ring stack
+            drive.followTrajectory(fourRingG);//second wobble
+            armPower(-.8,.8);//arm DOWN
+            sleep(250);
+            grabber(GRABBER_CLOSED);
+            sleep(600);
+            armPower(.7,.8);//arm up
+            drive.followTrajectory(fourRingH);//drop second wobble
+            drive.followTrajectory(fourRingI);
+            armPower(-.7, .7);//arm down
+            sleep(250);
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
+            drive.followTrajectory(fourRingJ);
+            sleep(2000);
+
         }
     }
 
