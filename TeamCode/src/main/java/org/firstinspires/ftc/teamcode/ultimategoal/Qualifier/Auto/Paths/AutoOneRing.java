@@ -75,10 +75,7 @@ public class AutoOneRing extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        while (opModeIsActive()) {
-            telemetry.addData("RPM", rpm.getRPM());
-            telemetry.update();
-        }
+
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
@@ -86,34 +83,54 @@ public class AutoOneRing extends LinearOpMode {
                 .lineTo(new Vector2d(-12,-24))
                 .build();
         Trajectory oneRingB = drive.trajectoryBuilder(oneRingA.end())//launch rings
-                .strafeTo(new Vector2d(-10, -31))
+                .strafeTo(new Vector2d(-3, -16))
                 .build();
-        Trajectory oneRingC = drive.trajectoryBuilder(oneRingB.end())
+        Trajectory oneRingC = drive.trajectoryBuilder(oneRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory oneRingD = drive.trajectoryBuilder(oneRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+        Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())
                 .lineToSplineHeading(new Pose2d(22,-32, Math.toRadians(-90))) //drop wobble goal
                 .build();
-        Trajectory oneRingD = drive.trajectoryBuilder(oneRingC.end())//ring stack
+        Trajectory oneRingF = drive.trajectoryBuilder(oneRingE.end())//ring stack
                 .lineToSplineHeading(new Pose2d(-28, -24, Math.toRadians(180)))
                 .build();
-        Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())//
+        Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end())//
                 .lineToConstantHeading(new Vector2d(-41, -38))
                 .build();
-        Trajectory oneRingF = drive.trajectoryBuilder(oneRingE.end())// second wobble
+        Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end())// second wobble
                 .lineToConstantHeading(new Vector2d(-43, -38))
                 .build();
-        Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end()) //drop wobble
+        Trajectory oneRingI = drive.trajectoryBuilder(oneRingH.end()) //drop wobble
                 .lineToSplineHeading(new Pose2d(16, -40, Math.toRadians(-90)))
                 .build();
-        Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end()) //park
+        Trajectory oneRingJ = drive.trajectoryBuilder(oneRingI.end()) //park
                 .lineTo(new Vector2d(12, -40))
                 .build();
 
         //TODO add auto code here
-        rpm.setRPM(2560);//launcher wheel rev up
-        sleep(1000);
+        rpm.setRPM(2255);//launcher wheel rev up
         drive.followTrajectory(oneRingA);
         drive.followTrajectory(oneRingB); //launch rings
-        launchRings();
-        sleep(3000);
+        sleep(550);
+        trigger.setPosition(.8);//set to launch
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(oneRingC); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(oneRingD); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+//        launchRings();
 //        trigger.setPosition(.8);//set to launch
 //        sleep(500);
 //        trigger.setPosition(0.1);//launch
@@ -128,28 +145,30 @@ public class AutoOneRing extends LinearOpMode {
 //        sleep(550);
 //        trigger.setPosition(.9);//set to launch
 //        sleep(250);
-//        drive.followTrajectory(oneRingC);//wobble goal 1
-//        armPower(-.5, 2.3); //arm down
-//        sleep(500);
-//        grabber(GRABBER_OPEN);
-//        armPower(.5,1);//arm up
-//        drive.followTrajectory(oneRingD);//ring stack
-//        drive.followTrajectory(oneRingE);
-//        sleep(500);
-//        armPower(-.5, 1.2);//arm down
-//        drive.followTrajectory(oneRingF);//second wobble
-//        sleep(1000);
-//        grabber(GRABBER_CLOSED);
-//        sleep(1000);
-//        armPower(.5,1);//arm up
-//        drive.followTrajectory(oneRingG);//drop second wobble
-//        armPower(-.5, 1);//arm down
-//        sleep(500);
-//        grabber(GRABBER_OPEN);
-//        sleep(500);
-//        armPower(.5,1);//arm up
-//        drive.followTrajectory(oneRingH);//park
-//        sleep(2000);
+        drive.followTrajectory(oneRingE);//wobble goal 1
+        armPower(-.5, 2.3); //arm down
+        sleep(250);
+        grabber(GRABBER_OPEN);
+        armPower(.5,1);//arm up
+        drive.followTrajectory(oneRingF);//ring stack
+        drive.followTrajectory(oneRingG);
+        armPower(-.5, 1.2);//arm down
+        drive.followTrajectory(oneRingH);//second wobble
+        grabber(GRABBER_CLOSED);
+        sleep(250);
+        armPower(.5,1);//arm up
+        drive.followTrajectory(oneRingI);//drop second wobble
+        armPower(-.5, 1);//arm down
+        sleep(500);
+        grabber(GRABBER_OPEN);
+        sleep(500);
+        armPower(.5,1);//arm up
+        drive.followTrajectory(oneRingJ);//park
+        sleep(2000);
+        while (opModeIsActive()) {
+            telemetry.addData("RPM", rpm.getRPM());
+            telemetry.update();
+        }
 
 
 
@@ -169,21 +188,20 @@ public class AutoOneRing extends LinearOpMode {
 
     }
     public void launchRings(){
-        sleep(5000);
+        sleep(3000);
         trigger.setPosition(.8);//set to launch
-        sleep(500);
+        sleep(1000);
         trigger.setPosition(0.1);//launch
-        sleep(500);
+        sleep(250);
         trigger.setPosition(.9);//set to launch
-        sleep(500);
+        sleep(1000);
         trigger.setPosition(0.1);//launch
-        sleep(500);
+        sleep(250);
         trigger.setPosition(.9);//set to launch
-        sleep(500);
+        sleep(1000);
         trigger.setPosition(0.1);//launcher
-        sleep(500);
+        sleep(250);
         trigger.setPosition(.9);//set to launch
-        sleep(500);
     }
     public void intakePower(double power){
         intake.setPower(power);

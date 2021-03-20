@@ -73,43 +73,70 @@ public class AutoFourRings extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-        while (opModeIsActive()) {
-            telemetry.addData("RPM", rpm.getRPM());
-            telemetry.update();
-        }
+
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
-        Trajectory fourRingsA = drive.trajectoryBuilder(startPose)//to launch line
+        Trajectory fourRingA = drive.trajectoryBuilder(startPose)//to launch line
                 .lineTo(new Vector2d(-12,-24))
                 .build();
-        Trajectory fourRingsB = drive.trajectoryBuilder(fourRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-10, -31))
+        Trajectory fourRingB = drive.trajectoryBuilder(fourRingA.end())//launch rings
+                .strafeTo(new Vector2d(-3, -16))
                 .build();
-        Trajectory fourRingsC = drive.trajectoryBuilder(fourRingsB.end())//drop wobble goal
+        Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory fourRingD = drive.trajectoryBuilder(fourRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+//        Trajectory fourRingE = drive.trajectoryBuilder(fourRingD.end())//launch rings
+//                .strafeTo(new Vector2d(-10, -31))
+//                .build();
+        Trajectory fourRingDa = drive.trajectoryBuilder(fourRingD.end())//drop wobble goal
 //                .splineToSplineHeading(new Pose2d(54,-36, Math.toRadians(0)), Math.toRadians(180))
-                .lineToSplineHeading(new Pose2d(56,-46, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-3,-46, Math.toRadians(180)))
                 .build();
-        Trajectory fourRingsD = drive.trajectoryBuilder(fourRingsC.end())//ring stack
-                .lineToSplineHeading(new Pose2d(0, -52, Math.toRadians(90)))
+        Trajectory fourRingE = drive.trajectoryBuilder(fourRingDa.end())//drop wobble goal
+//                .splineToSplineHeading(new Pose2d(54,-36, Math.toRadians(0)), Math.toRadians(180))
+                .lineToSplineHeading(new Pose2d(54,-46, Math.toRadians(180)))
                 .build();
-        Trajectory fourRingsE = drive.trajectoryBuilder(fourRingsD.end())//second wobble
-                .lineToConstantHeading(new Vector2d(-36, -48))
+        Trajectory fourRingF = drive.trajectoryBuilder(fourRingE.end())//ring stack
+                .lineToSplineHeading(new Pose2d(0, -54, Math.toRadians(90)))
                 .build();
-        Trajectory fourRingsF = drive.trajectoryBuilder(fourRingsE.end())//ring stack
+        Trajectory fourRingG = drive.trajectoryBuilder(fourRingF.end())//second wobble
+                .lineToConstantHeading(new Vector2d(-35, -55))
+                .build();
+        Trajectory fourRingH = drive.trajectoryBuilder(fourRingG.end())//ring stack
                 .lineToConstantHeading(new Vector2d(0, -52))
                 .build();
-        Trajectory fourRingsG = drive.trajectoryBuilder(fourRingsF.end())// drop wobble
-                .lineToSplineHeading(new Pose2d(48, -48, Math.toRadians(180)))
+        Trajectory fourRingI = drive.trajectoryBuilder(fourRingH.end())// drop wobble
+                .lineToSplineHeading(new Pose2d(46, -36, Math.toRadians(180)))
                 .build();
-        Trajectory fourRingsH = drive.trajectoryBuilder(fourRingsG.end()) //park
-                .lineTo(new Vector2d(12, -48))
+        Trajectory fourRingJ = drive.trajectoryBuilder(fourRingI.end()) //park
+                .lineTo(new Vector2d(12, -36))
                 .build();
 
         //TODO add auto code here
 
-        drive.followTrajectory(fourRingsA);
-        drive.followTrajectory(fourRingsB); //launch rings
+        rpm.setRPM(2259);//launcher wheel rev up
+        drive.followTrajectory(fourRingA);
+        drive.followTrajectory(fourRingB); //launch rings
+        sleep(750);
+        trigger.setPosition(.8);//set to launch
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(fourRingC); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(fourRingD); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
 //        rpm.setRPM(2560);//launcher wheel rev up
 //        launchRings();
 //        sleep(5000);
@@ -127,23 +154,29 @@ public class AutoFourRings extends LinearOpMode {
 //        sleep(500);
 //        trigger.setPosition(.9);//set to launch
 //        sleep(500);
-//        rpm.setRPM(0);
-        drive.followTrajectory(fourRingsC);//wobble goal 1
-//        armPower(-.5, 2.3); //arm down
-//        sleep(500);
-//        grabber(GRABBER_OPEN);
-        drive.followTrajectory(fourRingsD);//ring stack
-        drive.followTrajectory(fourRingsE);//second wobble
-//        sleep(500);
-//        grabber(GRABBER_CLOSED);
-//        sleep(1000);
-//        armPower(.5,1);//arm up
-        drive.followTrajectory(fourRingsF);//drop second wobble
-        drive.followTrajectory(fourRingsG);
-//        armPower(-.5, 1);//arm down
-//        sleep(500);
-//        grabber(GRABBER_OPEN);
-        drive.followTrajectory(fourRingsH);
+        rpm.setRPM(0);
+        drive.followTrajectory(fourRingDa);
+        drive.followTrajectory(fourRingE);//wobble goal 1
+        armPower(-.8, 1.2); //arm down
+        grabber(GRABBER_OPEN);
+        sleep(600);
+        armPower(.7,.75);//arm up
+        drive.followTrajectory(fourRingF);//ring stack
+        drive.followTrajectory(fourRingG);//second wobble
+        armPower(-.8,.8);//arm DOWN
+        sleep(250);
+        grabber(GRABBER_CLOSED);
+        sleep(600);
+        armPower(.7,.8);//arm up
+        drive.followTrajectory(fourRingH);//drop second wobble
+        drive.followTrajectory(fourRingI);
+        armPower(-.7, .7);//arm down
+        sleep(250);
+        grabber(GRABBER_OPEN);
+        sleep(500);
+        armPower(.7,.7);//arm up
+
+        drive.followTrajectory(fourRingJ);
 //        sleep(2000);
 
         // Transfer the current pose to PoseStorage so we can use it in TeleOp

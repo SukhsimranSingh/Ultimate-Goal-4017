@@ -78,41 +78,63 @@ public class AutoZeroRings extends LinearOpMode {
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
-        Trajectory zeroRingsA = drive.trajectoryBuilder(startPose)//to launch line
+        Trajectory zeroRingA = drive.trajectoryBuilder(startPose)//to launch line
                 .lineTo(new Vector2d(-12,-24))
 //                .addTemporalMarker(.5, () -> {
 //                    rpm.setRPM(3000);
 //                })
                 .build();
-        Trajectory zeroRingsB = drive.trajectoryBuilder(zeroRingsA.end())//launch rings
-                .strafeTo(new Vector2d(-10, -31))
+        Trajectory zeroRingB = drive.trajectoryBuilder(zeroRingA.end())//launch rings
+                .strafeTo(new Vector2d(-3, -16))
                 .build();
-        Trajectory zeroRingsC = drive.trajectoryBuilder(zeroRingsB.end())
+        Trajectory zeroRingC = drive.trajectoryBuilder(zeroRingB.end())//launch rings
+                .strafeTo(new Vector2d(-3, -8))
+                .build();
+        Trajectory zeroRingD = drive.trajectoryBuilder(zeroRingC.end())//launch rings
+                .strafeTo(new Vector2d(-3, -2))
+                .build();
+
+        Trajectory zeroRingE = drive.trajectoryBuilder(zeroRingD.end())
                 .lineToSplineHeading(new Pose2d(0,-44, Math.toRadians(180))) //drop wobble goal
                 .build();
 
-        Trajectory zeroRingsD = drive.trajectoryBuilder(zeroRingsC.end())//going to second
+        Trajectory zeroRingF = drive.trajectoryBuilder(zeroRingE.end())//going to second
                 .lineTo(new Vector2d(6, -40))
                 .build();
 
-        Trajectory zeroRingsE = drive.trajectoryBuilder(zeroRingsD.end())//lining up
+        Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingD.end())//lining up
                 .strafeTo(new Vector2d(6,-38))
                 .build();
 
-        Trajectory zeroRingsF = drive.trajectoryBuilder(zeroRingsE.end())// second wobble
+        Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingE.end())// second wobble
                 .lineToConstantHeading(new Vector2d(-48, -37))
                 .build();
 
-        Trajectory zeroRingsG = drive.trajectoryBuilder(zeroRingsF.end()) //drop wobble and park
+        Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingF.end()) //drop wobble and park
                 .lineTo(new Vector2d(12, -36))
                 .build();
 
         //TODO add auto code here
 
-        drive.followTrajectory(zeroRingsA);
-        rpm.setRPM(2560);//launcher wheel rev up
-        drive.followTrajectory(zeroRingsB); //launch rings
-        launchRings();
+        rpm.setRPM(2255);//launcher wheel rev up
+        drive.followTrajectory(zeroRingA);
+        drive.followTrajectory(zeroRingB); //launch rings
+        sleep(550);
+        trigger.setPosition(.8);//set to launch
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(zeroRingC); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
+        drive.followTrajectory(zeroRingD); //launch rings
+        sleep(500);
+        trigger.setPosition(0.1);//launch
+        sleep(550);
+        trigger.setPosition(.9);
 //        sleep(5000);
 //        trigger.setPosition(.8);//set to launch
 //        sleep(500);
@@ -129,18 +151,18 @@ public class AutoZeroRings extends LinearOpMode {
 //        trigger.setPosition(.9);//set to launch
 //        sleep(500);
         rpm.setRPM(0);
-        drive.followTrajectory(zeroRingsC);//wobble goal 1
+        drive.followTrajectory(zeroRingE);//wobble goal 1
         armPower(-.5, 2.3); //arm down
         sleep(500);
         grabber(GRABBER_OPEN);
-        drive.followTrajectory(zeroRingsD);
-        drive.followTrajectory(zeroRingsE);
-        drive.followTrajectory(zeroRingsF);
+        drive.followTrajectory(zeroRingF);
+        drive.followTrajectory(zeroRingG);
+        drive.followTrajectory(zeroRingH);
         sleep(500);
         grabber(GRABBER_CLOSED);
         sleep(1000);
         armPower(.5,1);//arm up
-        drive.followTrajectory(zeroRingsG);
+        drive.followTrajectory(zeroRingI);
         armPower(-.5, .75);//arm down
         sleep(500);
         grabber(GRABBER_OPEN);

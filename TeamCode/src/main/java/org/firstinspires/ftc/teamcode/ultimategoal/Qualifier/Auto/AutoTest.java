@@ -136,58 +136,24 @@ public class AutoTest extends LinearOpMode {
                 .build();
 
         //TODO add auto code here
-        if (pipeline.position == StackDeterminationPipeline.RingPosition.NONE){
+    while (opModeIsActive()) {
+        sleep(1000);
+        if (pipeline.position == StackDeterminationPipeline.RingPosition.NONE) {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
             telemetry.addData("RPM", rpm.getRPM());
             telemetry.update();
-            drive.followTrajectory(zeroRingsA);
-            drive.followTrajectory(zeroRingsB); //launch rings
-            rpm.setRPM(3400);//launcher wheel rev up
-            launchRings();
-//        sleep(5000);
-//        trigger.setPosition(.8);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launch
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launch
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launcher
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-            rpm.setRPM(0);
-            drive.followTrajectory(zeroRingsC);//wobble goal 1
-            armPower(-.5, 2.3); //arm down
-            sleep(500);
-            grabber(GRABBER_OPEN);
-            drive.followTrajectory(zeroRingsD);
-            drive.followTrajectory(zeroRingsE);
-            drive.followTrajectory(zeroRingsF);
-            sleep(500);
-            grabber(GRABBER_CLOSED);
-            sleep(1000);
-            armPower(.5,1);//arm up
-            drive.followTrajectory(zeroRingsG);
-            armPower(-.5, 1);//arm down
-            sleep(500);
-            grabber(GRABBER_OPEN);
-            sleep(2000);
-        }
-        else if (pipeline.position == StackDeterminationPipeline.RingPosition.ONE){
+
+        } else if (pipeline.position == StackDeterminationPipeline.RingPosition.ONE) {
+            telemetry.addData("Analysis", pipeline.getAnalysis());
+            telemetry.addData("Position", pipeline.position);
+            telemetry.update();
+        } else {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
             telemetry.update();
         }
-        else {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.update();
-        }
+    }
 
         // Transfer the current pose to PoseStorage so we can use it in TeleOp
         PoseStorage.currentPose = drive.getPoseEstimate();
@@ -242,12 +208,12 @@ public class AutoTest extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(181,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(154,98);
 
         static final int REGION_WIDTH = 35;
         static final int REGION_HEIGHT = 25;
 
-        final int FOUR_RING_THRESHOLD = 157;
+        final int FOUR_RING_THRESHOLD = 140;
         final int ONE_RING_THRESHOLD = 130;
 
         /*

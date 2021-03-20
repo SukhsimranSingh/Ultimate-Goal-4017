@@ -150,6 +150,38 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         // If the B button is pressed on gamepad1, we generate a lineTo()
                         // trajectory on the fly and follow it
                         // We switch the state to AUTOMATIC_CONTROL
+                        Trajectory fourRingA = drive.trajectoryBuilder(poseEstimate)//to launch line
+                                .lineTo(new Vector2d(-12,-24))
+                                .build();
+                        Trajectory fourRingB = drive.trajectoryBuilder(fourRingA.end())//launch rings
+                                .strafeTo(new Vector2d(-3, -16))
+                                .build();
+                        Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
+                                .strafeTo(new Vector2d(-3, -8))
+                                .build();
+                        Trajectory fourRingD = drive.trajectoryBuilder(fourRingC.end())//launch rings
+                                .strafeTo(new Vector2d(-3, -2))
+                                .build();
+
+                        rpm.setRPM(2259);//launcher wheel rev up
+                        drive.followTrajectory(fourRingA);
+                        drive.followTrajectory(fourRingB); //launch rings
+                        sleep(750);
+                        trigger.setPosition(.8);//set to launch
+                        sleep(500);
+                        trigger.setPosition(0.1);//launch
+                        sleep(550);
+                        trigger.setPosition(.9);
+                        drive.followTrajectory(fourRingC); //launch rings
+                        sleep(500);
+                        trigger.setPosition(0.1);//launch
+                        sleep(550);
+                        trigger.setPosition(.9);
+                        drive.followTrajectory(fourRingD); //launch rings
+                        sleep(500);
+                        trigger.setPosition(0.1);//launch
+                        sleep(550);
+                        trigger.setPosition(.9);
 
                         Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
                                 .lineTo(targetBVector)
