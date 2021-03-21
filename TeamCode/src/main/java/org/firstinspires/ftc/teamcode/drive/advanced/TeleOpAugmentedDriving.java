@@ -220,7 +220,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                     intake.setPower(intakePower);
 
                     //ARM
-                    arm.setPower(gamepad2.right_stick_y);
+                    arm.setPower(-gamepad2.right_stick_y);
                     //Grabber
                     if (gamepad2.left_trigger > 0) {
                         grabber.setPosition(GRABBER_OPEN);

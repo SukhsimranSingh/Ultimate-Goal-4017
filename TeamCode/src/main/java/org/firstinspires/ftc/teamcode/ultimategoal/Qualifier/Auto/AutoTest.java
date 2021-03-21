@@ -55,7 +55,7 @@ public class AutoTest extends LinearOpMode {
     private DcMotorEx arm;
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
-    public static final double GRABBER_CLOSED       =  0.8;
+    public static final double GRABBER_CLOSED       =  0.9;
     OpenCvCamera webcam;
     StackDeterminationPipeline pipeline;
 
@@ -131,11 +131,11 @@ public class AutoTest extends LinearOpMode {
                 .build();
 
         Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingF.end())//lining up
-                .strafeTo(new Vector2d(6,-38))
+                .strafeTo(new Vector2d(6,-36))
                 .build();
 
         Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingG.end())// second wobble
-                .lineToConstantHeading(new Vector2d(-48, -37))
+                .lineToConstantHeading(new Vector2d(-48, -35))
                 .build();
 
         Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingH.end()) //drop wobble and park
@@ -161,10 +161,10 @@ public class AutoTest extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(-28, -24, Math.toRadians(180)))
                 .build();
         Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end())//
-                .lineToConstantHeading(new Vector2d(-41, -38))
+                .lineToConstantHeading(new Vector2d(-41, -37))
                 .build();
         Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end())// second wobble
-                .lineToConstantHeading(new Vector2d(-43, -38))
+                .lineToConstantHeading(new Vector2d(-46, -37))
                 .build();
         Trajectory oneRingI = drive.trajectoryBuilder(oneRingH.end()) //drop wobble
                 .lineToSplineHeading(new Pose2d(16, -40, Math.toRadians(-90)))
@@ -195,7 +195,7 @@ public class AutoTest extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(0, -54, Math.toRadians(90)))
                 .build();
         Trajectory fourRingG = drive.trajectoryBuilder(fourRingF.end())//second wobble
-                .lineToConstantHeading(new Vector2d(-35, -55))
+                .lineToConstantHeading(new Vector2d(-36, -57))
                 .build();
         Trajectory fourRingH = drive.trajectoryBuilder(fourRingG.end())//ring stack
                 .lineToConstantHeading(new Vector2d(0, -52))
@@ -215,10 +215,11 @@ public class AutoTest extends LinearOpMode {
         telemetry.addData("RPM", rpm.getRPM());
         telemetry.update();
         if (pipeline.position == StackDeterminationPipeline.RingPosition.NONE) {
-            rpm.setRPM(2255);//launcher wheel rev up
+            webcam.stopStreaming();
+            rpm.setRPM(2259);//launcher wheel rev up
             drive.followTrajectory(zeroRingA);
             drive.followTrajectory(zeroRingB); //launch rings
-            sleep(550);
+            sleep(1200);
             trigger.setPosition(.8);//set to launch
             sleep(500);
             trigger.setPosition(0.1);//launch
@@ -236,7 +237,7 @@ public class AutoTest extends LinearOpMode {
             trigger.setPosition(.9);
             rpm.setRPM(0);
             drive.followTrajectory(zeroRingE);//wobble goal 1
-            armPower(-.8, 1.2); //arm down
+            armPower(-.8, 1.3); //arm down
             sleep(500);
             grabber(GRABBER_OPEN);
             drive.followTrajectory(zeroRingF);
@@ -251,12 +252,13 @@ public class AutoTest extends LinearOpMode {
             grabber(GRABBER_OPEN);
             sleep(500);
             armPower(.7,.7);//arm up
-            sleep(2000);
+            sleep(6000);
         } else if (pipeline.position == StackDeterminationPipeline.RingPosition.ONE) {
-            rpm.setRPM(2255);//launcher wheel rev up
+            webcam.stopStreaming();
+            rpm.setRPM(2259);//launcher wheel rev up
             drive.followTrajectory(oneRingA);
             drive.followTrajectory(oneRingB); //launch rings
-            sleep(550);
+            sleep(1200);
             trigger.setPosition(.8);//set to launch
             sleep(500);
             trigger.setPosition(0.1);//launch
@@ -272,32 +274,32 @@ public class AutoTest extends LinearOpMode {
             trigger.setPosition(0.1);//launch
             sleep(550);
             trigger.setPosition(.9);
-            rpm.setRPM(0);
             drive.followTrajectory(oneRingE);//wobble goal 1
-            armPower(-.8, 1.2); //arm down
+            armPower(-.5, 2.2); //arm down
             sleep(250);
             grabber(GRABBER_OPEN);
-            armPower(.7,.75);//arm up
+            armPower(.5,1.1);//arm up
             drive.followTrajectory(oneRingF);//ring stack
             drive.followTrajectory(oneRingG);
-            armPower(-.8,.8);//arm DOWN
+            armPower(-.6, 1);//arm down
             drive.followTrajectory(oneRingH);//second wobble
             grabber(GRABBER_CLOSED);
-            sleep(250);
-            armPower(.7,.8);//arm up
+            sleep(750);
+            armPower(.5,1);//arm up
             drive.followTrajectory(oneRingI);//drop second wobble
-            armPower(-.7, .7);//arm down
+            armPower(-.5, 1);//arm down
             sleep(500);
             grabber(GRABBER_OPEN);
             sleep(500);
-            armPower(.7,.7);//arm up
+            armPower(.5,1);//arm up
             drive.followTrajectory(oneRingJ);//park
-            sleep(2000);
-        } else {
+            sleep(6000);
+        } else if (pipeline.position == StackDeterminationPipeline.RingPosition.FOUR) {
+            webcam.stopStreaming();
             rpm.setRPM(2259);//launcher wheel rev up
             drive.followTrajectory(fourRingA);
             drive.followTrajectory(fourRingB); //launch rings
-            sleep(750);
+            sleep(1200);
             trigger.setPosition(.8);//set to launch
             sleep(500);
             trigger.setPosition(0.1);//launch
@@ -319,24 +321,23 @@ public class AutoTest extends LinearOpMode {
             armPower(-.8, 1.2); //arm down
             grabber(GRABBER_OPEN);
             sleep(600);
-            armPower(.7,.75);//arm up
+            armPower(.7, .75);//arm up
             drive.followTrajectory(fourRingF);//ring stack
             drive.followTrajectory(fourRingG);//second wobble
-            armPower(-.8,.8);//arm DOWN
+            armPower(-.8, .8);//arm DOWN
             sleep(250);
             grabber(GRABBER_CLOSED);
             sleep(600);
-            armPower(.7,.8);//arm up
+            armPower(.7, .8);//arm up
             drive.followTrajectory(fourRingH);//drop second wobble
             drive.followTrajectory(fourRingI);
             armPower(-.7, .7);//arm down
             sleep(250);
             grabber(GRABBER_OPEN);
             sleep(500);
-            armPower(.7,.7);//arm up
+            armPower(.7, .7);//arm up
             drive.followTrajectory(fourRingJ);
-            sleep(2000);
-
+            sleep(6000);
         }
     }
 
@@ -399,7 +400,7 @@ public class AutoTest extends LinearOpMode {
         static final int REGION_HEIGHT = 25;
 
         final int FOUR_RING_THRESHOLD = 140;
-        final int ONE_RING_THRESHOLD = 130;
+        final int ONE_RING_THRESHOLD = 129;
 
         /*
          * Points which actually define the sample region rectangles, derived from above values

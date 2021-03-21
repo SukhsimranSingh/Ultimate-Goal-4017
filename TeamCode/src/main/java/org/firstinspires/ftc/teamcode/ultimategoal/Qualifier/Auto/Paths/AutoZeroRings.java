@@ -71,10 +71,7 @@ public class AutoZeroRings extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        while (opModeIsActive()) {
-            telemetry.addData("RPM", rpm.getRPM());
-            telemetry.update();
-        }
+
 
         // Example spline path from SplineTest.java
         // Make sure the start pose matches with the localizer's start pose
@@ -107,7 +104,7 @@ public class AutoZeroRings extends LinearOpMode {
                 .build();
 
         Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingG.end())// second wobble
-                .lineToConstantHeading(new Vector2d(-48, -37))
+                .lineToConstantHeading(new Vector2d(-47, -37))
                 .build();
 
         Trajectory zeroRingI = drive.trajectoryBuilder(zeroRingH.end()) //drop wobble and park
@@ -135,24 +132,9 @@ public class AutoZeroRings extends LinearOpMode {
         trigger.setPosition(0.1);//launch
         sleep(550);
         trigger.setPosition(.9);
-//        sleep(5000);
-//        trigger.setPosition(.8);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launch
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launch
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
-//        trigger.setPosition(0.1);//launcher
-//        sleep(500);
-//        trigger.setPosition(.9);//set to launch
-//        sleep(500);
         rpm.setRPM(0);
         drive.followTrajectory(zeroRingE);//wobble goal 1
-        armPower(-.5, 2.3); //arm down
+        armPower(-.8, 1.2); //arm down
         sleep(500);
         grabber(GRABBER_OPEN);
         drive.followTrajectory(zeroRingF);
@@ -161,14 +143,12 @@ public class AutoZeroRings extends LinearOpMode {
         sleep(500);
         grabber(GRABBER_CLOSED);
         sleep(1000);
-        armPower(.5,1);//arm up
+        armPower(.7,.8);//arm up
         drive.followTrajectory(zeroRingI);
-        armPower(-.5, .75);//arm down
-        sleep(500);
+        armPower(-.7, .7);//arm down
         grabber(GRABBER_OPEN);
-        armPower(.5,1);//arm up
-        sleep(2000);
-
+        sleep(500);
+        armPower(.7,.7);//arm up
 
 
         // Transfer the current pose to PoseStorage so we can use it in TeleOp
