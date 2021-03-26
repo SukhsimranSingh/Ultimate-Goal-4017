@@ -25,7 +25,14 @@ public class DistanceFromRing extends LinearOpMode {
     distanceTracker = new DistanceFromRingTracker(
       0.5
     );
-    webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
+    int cameraMonitorViewId = hardwareMap.appContext
+            .getResources()
+            .getIdentifier(
+                    "cameraMonitorViewId",
+                    "id",
+                    hardwareMap.appContext.getPackageName()
+            ); // for camera preview
+    webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
     FtcDashboard.getInstance().startCameraStream(webcam, 0);
     webcam.setPipeline(distanceTracker);
 

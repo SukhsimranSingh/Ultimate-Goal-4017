@@ -64,7 +64,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         FOCAL_LENGTH,
         DISTANCE
     }
-    RingDetector.Mode currentMode = RingDetector.Mode.FOCAL_LENGTH;
+    Mode currentMode = Mode.FOCAL_LENGTH;
 
 
     /*

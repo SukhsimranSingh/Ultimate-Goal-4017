@@ -21,7 +21,7 @@ public class OpenCVPipelineRunner {
         "id",
         hardwareMap.appContext.getPackageName()
       ); // for camera preview
-    webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
+    webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
 
     webcam.openCameraDevice();
     openCvTrackerApiPipeline = new OpenCvTrackerApiPipeline();

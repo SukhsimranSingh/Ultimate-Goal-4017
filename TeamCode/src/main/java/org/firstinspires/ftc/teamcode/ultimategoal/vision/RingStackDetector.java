@@ -27,7 +27,14 @@ public class RingStackDetector extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
+        int cameraMonitorViewId = hardwareMap.appContext
+                .getResources()
+                .getIdentifier(
+                        "cameraMonitorViewId",
+                        "id",
+                        hardwareMap.appContext.getPackageName()
+                ); // for camera preview
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         pipeline = new StackDeterminationPipeline();
         webcam.setPipeline(pipeline);

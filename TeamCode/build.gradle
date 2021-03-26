@@ -27,5 +27,8 @@ dependencies {
 
     implementation "com.noahbres.jotai:jotai:1.0.2"
 
+    implementation 'com.arcrobotics.ftclib:vision:1.1.0' // vision
+    implementation 'com.arcrobotics:ftclib:1.1.6' // core
+
 
 }
