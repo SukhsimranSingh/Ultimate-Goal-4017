@@ -31,7 +31,6 @@ package org.firstinspires.ftc.teamcode.ultimategoal.vision;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -65,7 +64,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         FOCAL_LENGTH,
         DISTANCE
     }
-    RingDistanceDetector.Mode currentMode = RingDistanceDetector.Mode.FOCAL_LENGTH;
+    RingDetector.Mode currentMode = RingDetector.Mode.FOCAL_LENGTH;
 
 
     /*

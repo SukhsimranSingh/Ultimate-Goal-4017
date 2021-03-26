@@ -42,7 +42,7 @@ public class RingStackDetector extends LinearOpMode
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
             }
         });
 

@@ -10,12 +10,13 @@ import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvTracker;
 
 import java.util.ArrayList;
 
 @Config
-public class DistanceFromRingTracker extends OpenCvTracker {
+public class DistanceFromRingTracker extends OpenCvPipeline {
 
   /**
    * The hand pre-calculated value of the focal length for calculating the distance using @see #computeDistance()
@@ -37,12 +38,12 @@ public class DistanceFromRingTracker extends OpenCvTracker {
   private final MatOfPoint2f largestContour2f = new MatOfPoint2f();
 
   /**
-   * The bounds of the detected piece of paper
+   * The bounds of the detected piece of ring
    */
   public RotatedRect bounds = new RotatedRect();
 
   /**
-   * Class Constructor for the paper distance detection pipeline
+   * Class Constructor for the ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    */
@@ -51,7 +52,7 @@ public class DistanceFromRingTracker extends OpenCvTracker {
   }
 
   /**
-   * Class Constructor for the paper distance detection pipeline
+   * Class Constructor for the ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    * @param thresholdThresh threshold for the threshold step of the pipeline
@@ -68,7 +69,7 @@ public class DistanceFromRingTracker extends OpenCvTracker {
   }
 
   /**
-   * Class Constructor for paper distance detection pipeline
+   * Class Constructor for ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    * @param thresholdThresh threshold for the threshold step of the pipeline
@@ -155,10 +156,10 @@ public class DistanceFromRingTracker extends OpenCvTracker {
   }
 
   /**
-   * Returns the distance from the detected paper in inches
+   * Returns the distance from the detected ring in inches
    * Formula used is D’ = (W x F) / P
    *
-   * @return double the computed distance from the white paper on screen in inches
+   * @return double the computed distance from the white ring on screen in inches
    */
   public double computefocalLength(){
     return (bounds.size.width * distance) / 5;

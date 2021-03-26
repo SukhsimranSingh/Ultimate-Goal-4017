@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.ultimategoal.vision;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.TeleOp.TeleOpAugmentedDriving4017;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -17,17 +15,19 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
-@Disabled
+
 @TeleOp
-public class RingDistanceDetector extends LinearOpMode
+public class RingDetector extends LinearOpMode
 {
     OpenCvCamera webcam;
-    StackDeterminationPipeline pipeline;
+    StackDeterminationPipeline stackDetector;
+    DistanceFromRingTracker distanceDetector;
+    OpenCvPipeline pipeline;
     enum Mode {
-        FOCAL_LENGTH,
+        STACK,
         DISTANCE
     }
-    Mode currentMode = Mode.FOCAL_LENGTH;
+    Mode currentMode = Mode.DISTANCE;
 
 
     @Override
@@ -35,7 +35,11 @@ public class RingDistanceDetector extends LinearOpMode
     {
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
-        pipeline = new StackDeterminationPipeline();
+        stackDetector = new StackDeterminationPipeline();
+        distanceDetector = new DistanceFromRingTracker(
+                0.5
+        );
+        pipeline = distanceDetector;
         webcam.setPipeline(pipeline);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
@@ -48,19 +52,50 @@ public class RingDistanceDetector extends LinearOpMode
             @Override
             public void onOpened()
             {
-                webcam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
             }
         });
+
+
+        telemetry = FtcDashboard.getInstance().getTelemetry();
 
         waitForStart();
         if (isStopRequested()) return;
 
         while (opModeIsActive() && !isStopRequested()) {
+            switch (currentMode){
+                case DISTANCE:
+                    telemetry.addData("FPS", webcam.getFps());
+                    telemetry.addData("Pipeline (ms)", webcam.getPipelineTimeMs());
+                    telemetry.addData(
+                            "Total Frame time (ms)",
+                            webcam.getTotalFrameTimeMs()
+                    );
+                    telemetry.addData(
+                            "W, H (px)",
+                            distanceDetector.bounds.size.width +
+                                    ", " +
+                                    distanceDetector.bounds.size.height
+                    );
+                    telemetry.addData("distance (in)", distanceDetector.computeDistance());
+                    telemetry.addData("focalLength", distanceDetector.computefocalLength());
+                    telemetry.update();
+                    if (gamepad1.a) {
+                        pipeline = stackDetector;
+                        currentMode = Mode.DISTANCE;
+                    }
+                    break;
+                case STACK:
+                    telemetry.addData("Analysis", stackDetector.getAnalysis());
+                    telemetry.addData("Position", stackDetector.position);
+                    telemetry.update();
+                    if (gamepad1.b) {
+                        pipeline = distanceDetector;
+                        currentMode = Mode.DISTANCE;
+                    }
+                    break;
 
-                telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.update();
-
+            }
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
@@ -192,4 +227,6 @@ public class RingDistanceDetector extends LinearOpMode
 
         }
     }
+
+
 }
