@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.ultimategoal.vision;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -42,6 +43,7 @@ public class UGContourRingPipelineJavaExample extends LinearOpMode {
                     .getInstance()
                     .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         }
+        FtcDashboard.getInstance().startCameraStream(camera, 0);
 
         camera.setPipeline(pipeline = new UGContourRingPipeline(telemetry, DEBUG));
 
@@ -54,6 +56,10 @@ public class UGContourRingPipelineJavaExample extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            if (pipeline.getHeight() == UGContourRingPipeline.Height.ZERO){
+
+            }
             String height = "[HEIGHT]" + " " + pipeline.getHeight();
             telemetry.addData("[Ring Stack] >>", height);
             telemetry.update();
