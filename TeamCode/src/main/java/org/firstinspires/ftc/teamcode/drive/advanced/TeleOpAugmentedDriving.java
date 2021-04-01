@@ -58,8 +58,11 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
     public static final double GRABBER_OPEN       =  0.2 ;
     public static final double GRABBER_CLOSED     =  0.9 ;
-    public static final double TRIGGER_PRESSED    =  0.1 ;
-    public static final double TRIGGER_UNPRESSED  =  0.8 ;
+    public static double TRIGGER_PRESSED    =  0.55 ;
+    public static final double TRIGGER_UNPRESSED  =  0.75 ;
+
+    public static double HIGHGOAL = 4150;
+    public static double POWERSHOT = 3050;
 
     private Servo grabber;
     private Servo trigger;
@@ -90,7 +93,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
         // See AutoTransferPose.java for further details
         drive.setPoseEstimate(PoseStorage.currentPose);
         DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
-        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
+        launcher.setDirection(DcMotorSimple.Direction.REVERSE);
 
         RPMTool rpm = new RPMTool(launcher, 28);
         //Gobilda 6000 rpm motor
@@ -161,24 +164,24 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                                 .strafeTo(new Vector2d(-3, -2))
                                 .build();
 
-                        rpm.setRPM(2259);//launcher wheel rev up
+                        rpm.setRPM(HIGHGOAL);//launcher wheel rev up
                         drive.followTrajectory(fourRingB); //launch rings
                         sleep(750);
-                        trigger.setPosition(.8);//set to launch
+                        trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
                         sleep(500);
-                        trigger.setPosition(0.1);//launch
+                        trigger.setPosition(TRIGGER_PRESSED);//launch
                         sleep(550);
-                        trigger.setPosition(.9);
+                        trigger.setPosition(TRIGGER_UNPRESSED);
                         drive.followTrajectory(fourRingC); //launch rings
                         sleep(500);
-                        trigger.setPosition(0.1);//launch
+                        trigger.setPosition(TRIGGER_PRESSED);//launch
                         sleep(550);
-                        trigger.setPosition(.9);
+                        trigger.setPosition(TRIGGER_UNPRESSED);
                         drive.followTrajectory(fourRingD); //launch rings
                         sleep(500);
-                        trigger.setPosition(0.1);//launch
+                        trigger.setPosition(TRIGGER_PRESSED);//launch
                         sleep(550);
-                        trigger.setPosition(.9);
+                        trigger.setPosition(TRIGGER_UNPRESSED);
 
 //                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
 //                                .lineTo(targetBVector)
@@ -196,13 +199,13 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     }
                     if (gamepad1.left_bumper){
-                        rpm.setRPM(2560);
+                        rpm.setRPM(HIGHGOAL);
                     }
                     if (gamepad1.right_bumper){
-                        rpm.setRPM(2700);
+                        rpm.setRPM(POWERSHOT);
                     }
                     if (gamepad1.dpad_up){
-                        rpm.setRPM(2259);
+                        rpm.setRPM(4500);
                     }
                     if (gamepad1.dpad_down){
                         launcher.setPower(0);
@@ -217,7 +220,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
                     //Intake
                     double intakePower = gamepad1.left_trigger;
-                    intake.setPower(intakePower);
+                    intake.setPower(-intakePower);
 
                     //ARM
                     arm.setPower(-gamepad2.right_stick_y);

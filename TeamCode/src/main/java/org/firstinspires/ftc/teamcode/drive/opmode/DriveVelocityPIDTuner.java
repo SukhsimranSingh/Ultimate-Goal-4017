@@ -50,8 +50,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  * Pressing A (on the Xbox and Logitech F310 gamepads, X on the PS4 Dualshock gamepad) will cede
  * control back to the tuning process.
  */
-@Disabled
 
+@Disabled
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {

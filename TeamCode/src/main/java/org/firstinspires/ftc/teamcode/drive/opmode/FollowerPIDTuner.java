@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
  * These coefficients can be tuned live in dashboard.
  */
 
-
+@Disabled
 @Config
 @Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
