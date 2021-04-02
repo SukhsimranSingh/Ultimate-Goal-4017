@@ -58,9 +58,11 @@ public class AutoChamps extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public static final double GRABBER_OPEN       =  0.1;
     public static final double GRABBER_CLOSED       =  0.9;
+    public static double TRIGGER_PRESSED    =  0.55 ;
+    public static final double TRIGGER_UNPRESSED  =  0.75 ;
 
-    double powerShotRPM = 2500;
-    double highGoal = 2700;
+    double powerShotRPM = 3450;
+    double highGoal = 4150;
 
     private static final int CAMERA_WIDTH = 320; // width  of wanted camera resolution
     private static final int CAMERA_HEIGHT = 240; // height of wanted camera resolution
@@ -82,8 +84,8 @@ public class AutoChamps extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         DcMotorEx launcher = hardwareMap.get(DcMotorEx.class, "launcher");
         arm    = hardwareMap.get(DcMotorEx.class, "arm");
+        launcher.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        launcher.setDirection(DcMotorSimple.Direction.FORWARD);
         RPMTool rpm = new RPMTool(launcher, 28);
         grabber  = hardwareMap.servo.get("grabber");
         trigger = hardwareMap.servo.get("trigger");
@@ -137,13 +139,13 @@ public class AutoChamps extends LinearOpMode {
 //                })
                 .build();
         Trajectory zeroRingB = drive.trajectoryBuilder(zeroRingA.end())//launch rings
-                .strafeTo(new Vector2d(-3, -16))
+                .strafeTo(new Vector2d(-12, -16))
                 .build();
         Trajectory zeroRingC = drive.trajectoryBuilder(zeroRingB.end())//powershot 1
-                .strafeTo(new Vector2d(-3, -8))
+                .strafeTo(new Vector2d(-12, -8))
                 .build();
         Trajectory zeroRingD = drive.trajectoryBuilder(zeroRingC.end())//powershot 2
-                .strafeTo(new Vector2d(-3, -2))
+                .strafeTo(new Vector2d(-12, -2))
                 .build();
 
         Trajectory zeroRingE = drive.trajectoryBuilder(zeroRingD.end())
@@ -167,13 +169,13 @@ public class AutoChamps extends LinearOpMode {
                 .lineTo(new Vector2d(-12,-24))
                 .build();
         Trajectory oneRingB = drive.trajectoryBuilder(oneRingA.end())//powershot 1
-                .strafeTo(new Vector2d(-3, -16))
+                .strafeTo(new Vector2d(-12, -16))
                 .build();
         Trajectory oneRingC = drive.trajectoryBuilder(oneRingB.end())//powershot 2
-                .strafeTo(new Vector2d(-3, -8))
+                .strafeTo(new Vector2d(-12, -8))
                 .build();
         Trajectory oneRingD = drive.trajectoryBuilder(oneRingC.end())//powershot 3
-                .strafeTo(new Vector2d(-3, -2))
+                .strafeTo(new Vector2d(-12, -2))
                 .build();
         Trajectory oneRingE = drive.trajectoryBuilder(oneRingD.end())
                 .lineToSplineHeading(new Pose2d(18,-26, Math.toRadians(-90))) //drop wobble goal
@@ -193,13 +195,13 @@ public class AutoChamps extends LinearOpMode {
                 .lineTo(new Vector2d(-12,-24))
                 .build();
         Trajectory fourRingB = drive.trajectoryBuilder(fourRingA.end())//launch rings
-                .strafeTo(new Vector2d(-3, -16))
+                .strafeTo(new Vector2d(-12, -16))
                 .build();
         Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
-                .strafeTo(new Vector2d(-3, -8))
+                .strafeTo(new Vector2d(-12, -8))
                 .build();
         Trajectory fourRingD = drive.trajectoryBuilder(fourRingC.end())//launch rings
-                .strafeTo(new Vector2d(-3, -2))
+                .strafeTo(new Vector2d(-12, -2))
                 .build();
         Trajectory fourRingDa = drive.trajectoryBuilder(fourRingD.end())//drop wobble goal
                 .lineToSplineHeading(new Pose2d(-3,-36, Math.toRadians(180)))
@@ -231,23 +233,23 @@ public class AutoChamps extends LinearOpMode {
             rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(zeroRingA);
             drive.followTrajectory(zeroRingB); //powershot 1
-//            sleep(1200);
-//            trigger.setPosition(.8);//set to launch
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
+            sleep(1200);
+            trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
             drive.followTrajectory(zeroRingC); //powershot 2
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
             drive.followTrajectory(zeroRingD); //powershot 3
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
-//            rpm.setRPM(0);
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            rpm.setRPM(0);
             drive.followTrajectory(zeroRingE);//wobble goal 1
 //            armPower(-.8, 1.3); //arm down
 //            sleep(500);
@@ -263,10 +265,10 @@ public class AutoChamps extends LinearOpMode {
 //            grabber(GRABBER_OPEN);
 //            sleep(500);
 //            armPower(.7,.7);//arm up
-//            sleep(6000);
+            sleep(6000);
 
         } else if (pipeline.getHeight() == UGContourRingPipeline.Height.ONE) {
-            rpm.setRPM(powerShotRPM);//launcher wheel rev up
+//            rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(oneRingA);
             drive.followTrajectory(oneRingB); //powershot 1
 //            sleep(1200);
@@ -302,7 +304,7 @@ public class AutoChamps extends LinearOpMode {
 //            grabber(GRABBER_OPEN);
 //            sleep(500);
 //            armPower(.5,1);//arm up
-//            sleep(6000);
+            sleep(6000);
         } else if (pipeline.getHeight() == UGContourRingPipeline.Height.FOUR) {
 //            rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(fourRingA);
@@ -336,7 +338,7 @@ public class AutoChamps extends LinearOpMode {
 //            sleep(250);
 //            grabber(GRABBER_CLOSED);
 //            sleep(600);
-            armPower(.7, .8);//arm up
+//            armPower(.7, .8);//arm up
             drive.followTrajectory(fourRingH);//drop second wobble
             drive.followTrajectory(fourRingI);
 //            armPower(-.7, .7);//arm down

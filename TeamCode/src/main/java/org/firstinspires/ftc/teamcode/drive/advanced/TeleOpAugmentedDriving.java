@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.advanced;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -40,6 +41,7 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
  * <p>
  * This sample utilizes the SampleMecanumDriveCancelable.java class.
  */
+@Config
 @TeleOp(group = "advanced")
 public class TeleOpAugmentedDriving extends LinearOpMode {
     // Define 2 states, drive control or automatic control
@@ -62,7 +64,7 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     public static final double TRIGGER_UNPRESSED  =  0.75 ;
 
     public static double HIGHGOAL = 4150;
-    public static double POWERSHOT = 3050;
+    public static double POWERSHOT = 3450;
 
     private Servo grabber;
     private Servo trigger;
