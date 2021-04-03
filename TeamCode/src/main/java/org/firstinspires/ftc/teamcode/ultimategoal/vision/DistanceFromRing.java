@@ -16,6 +16,8 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
  * In this sample, we demonstrate how to use the advanced features provided
  * by the {@link OpenCvInternalCamera} interface
  */
+@Disabled
+
 @TeleOp(name = "OpenCVringdistance", group = "AI")
 public class DistanceFromRing extends LinearOpMode {
   OpenCvCamera webcam;
