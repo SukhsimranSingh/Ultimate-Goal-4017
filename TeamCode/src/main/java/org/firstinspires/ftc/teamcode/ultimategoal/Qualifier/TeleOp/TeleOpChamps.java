@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.advanced;
+package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -14,6 +14,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.advanced.PoseStorage;
+import org.firstinspires.ftc.teamcode.drive.advanced.SampleMecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 
 /**
@@ -45,7 +47,7 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
 @Disabled
 @Config
 @TeleOp(group = "advanced")
-public class TeleOpAugmentedDriving extends LinearOpMode {
+public class TeleOpChamps extends LinearOpMode {
     // Define 2 states, drive control or automatic control
     enum Mode {
         DRIVER_CONTROL,
@@ -53,10 +55,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     }
 
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotorEx leftFront;
-    private DcMotorEx leftRear;
-    private DcMotorEx rightFront;
-    private DcMotorEx rightRear;
     private DcMotor intake;
     private DcMotor arm;
 
@@ -74,15 +72,12 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
     Mode currentMode = Mode.DRIVER_CONTROL;
 
     // The coordinates we want the bot to automatically go to when we press the A button
-    Vector2d targetAVector = new Vector2d(-10, -31);
+    Vector2d targetAVector = new Vector2d(-24, -30);
     // The heading we want the bot to end on for targetA
     double targetAHeading = Math.toRadians(0);
 
-    // The location we want the bot to automatically go to when we press the B button
-    Vector2d targetBVector = new Vector2d(-10, -31);
-
     // The angle we want to align to when we press Y
-    double targetAngle = Math.toRadians(10);
+    double targetAngle = Math.toRadians(0);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -101,11 +96,6 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
 
         RPMTool rpm = new RPMTool(launcher, 28);
         //Gobilda 6000 rpm motor
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         arm = hardwareMap.get(DcMotorEx.class, "arm");
         grabber = hardwareMap.servo.get("grabber");
@@ -158,40 +148,24 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                         // If the B button is pressed on gamepad1, we generate a lineTo()
                         // trajectory on the fly and follow it
                         // We switch the state to AUTOMATIC_CONTROL
-                        Trajectory fourRingB = drive.trajectoryBuilder(poseEstimate)//launch rings
-                                .strafeTo(new Vector2d(-3, -16))
+                        Trajectory powershotOne = drive.trajectoryBuilder(poseEstimate)//powershot 1
+                                .strafeTo(new Vector2d(-12, -16))
                                 .build();
-                        Trajectory fourRingC = drive.trajectoryBuilder(fourRingB.end())//launch rings
-                                .strafeTo(new Vector2d(-3, -8))
+                        Trajectory powershotTwo = drive.trajectoryBuilder(powershotOne.end())//powershot 2
+                                .strafeTo(new Vector2d(-12, -8))
                                 .build();
-                        Trajectory fourRingD = drive.trajectoryBuilder(fourRingC.end())//launch rings
-                                .strafeTo(new Vector2d(-3, -2))
+                        Trajectory powershotThree = drive.trajectoryBuilder(powershotTwo.end())//powershot 3
+                                .strafeTo(new Vector2d(-12, -2))
                                 .build();
 
-                        rpm.setRPM(HIGHGOAL);//launcher wheel rev up
-                        drive.followTrajectory(fourRingB); //launch rings
-                        sleep(750);
-                        trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
-                        sleep(500);
-                        trigger.setPosition(TRIGGER_PRESSED);//launch
-                        sleep(550);
-                        trigger.setPosition(TRIGGER_UNPRESSED);
-                        drive.followTrajectory(fourRingC); //launch rings
-                        sleep(500);
-                        trigger.setPosition(TRIGGER_PRESSED);//launch
-                        sleep(550);
-                        trigger.setPosition(TRIGGER_UNPRESSED);
-                        drive.followTrajectory(fourRingD); //launch rings
-                        sleep(500);
-                        trigger.setPosition(TRIGGER_PRESSED);//launch
-                        sleep(550);
-                        trigger.setPosition(TRIGGER_UNPRESSED);
-
-//                        Trajectory traj1 = drive.trajectoryBuilder(poseEstimate)
-//                                .lineTo(targetBVector)
-//                                .build();
-
-//                        drive.followTrajectoryAsync(traj1);
+                        rpm.setRPM(POWERSHOT);//launcher wheel rev up
+                        drive.followTrajectory(powershotOne);//powershot1
+                        launchRing();
+                        drive.followTrajectory(powershotTwo);//powershot2
+                        launchRing();
+                        drive.followTrajectory(powershotThree);//powershot3
+                        launchRing();
+                        rpm.setRPM(0);
 
                         currentMode = Mode.AUTOMATIC_CONTROL;
                     } else if (gamepad1.y) {
@@ -251,5 +225,11 @@ public class TeleOpAugmentedDriving extends LinearOpMode {
                     break;
             }
         }
+    }
+    public void launchRing(){
+        trigger.setPosition(TRIGGER_PRESSED);//launch
+        sleep(500);
+        trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
+
     }
 }

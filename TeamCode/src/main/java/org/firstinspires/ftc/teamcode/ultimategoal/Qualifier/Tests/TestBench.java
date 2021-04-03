@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.MecanumDriveCancelable;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.PoseStorage;
 import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
+@Disabled
 @TeleOp(name="TestBench")
 public class TestBench extends LinearOpMode {
 

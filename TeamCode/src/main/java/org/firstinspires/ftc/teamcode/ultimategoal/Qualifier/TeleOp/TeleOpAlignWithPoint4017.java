@@ -28,6 +28,7 @@ import org.firstinspires.ftc.teamcode.util.DashboardUtil;
  * Note: We don't call drive.update() here because it has its own field drawing functions. We don't
  * want that to interfere with our graph so we just directly update localizer instead
  */
+@Disabled
 @Config
 @TeleOp
 public class TeleOpAlignWithPoint4017 extends LinearOpMode {

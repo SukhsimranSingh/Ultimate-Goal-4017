@@ -9,6 +9,8 @@ import org.openftc.easyopencv.*;
  * In this sample, we demonstrate how to use the advanced features provided
  * by the {@link OpenCvInternalCamera} interface
  */
+@Disabled
+
 @TeleOp(name = "OpenCV Paper Detection Demo Algorithm", group = "AI")
 public class DistanceFromPaper extends LinearOpMode {
 

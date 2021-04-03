@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util.RPMTool;
  * This opmode is essentially just LocalizationTest.java with a few additions and comments.
  */
 
-
+@Disabled
 @TeleOp(group = "advanced")
 public class NonAugmentedTeleOp extends LinearOpMode {
 

@@ -26,6 +26,8 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvPipeline;
+@Disabled
+
 @Autonomous
 public class NonFSM extends LinearOpMode {
     Hardware2 robot           = new Hardware2();   // Use our hardware

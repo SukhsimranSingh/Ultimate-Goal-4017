@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 
 /*
  * RPMTool can read and write RPM values
@@ -15,9 +17,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RPMTool {
 
     public double TICKS_PER_REVOLUTION = 0;
-
-    public VoltageSensor batteryVoltageSensor;
-
 
     private ElapsedTime time;
 
@@ -39,6 +38,7 @@ public class RPMTool {
      * motor that you want to read the RPM of or write the RPM needs to be passed as the motor parameter.
      * The ticks per revolution also needs to be passed as a parameter (you'll find value on motor website).
      */
+
     public RPMTool(DcMotorEx motor, double TICKS_PER_REVOLUTION){
 
         this.TICKS_PER_REVOLUTION = TICKS_PER_REVOLUTION;
@@ -88,7 +88,7 @@ public class RPMTool {
         double ticksPerSec = targetRPM * TICKS_PER_REVOLUTION / 60;
 
         // set velocity
-        motor.setVelocityPIDFCoefficients(p,i,d,f * 12 / batteryVoltageSensor.getVoltage());
+//        motor.setVelocityPIDFCoefficients(p,i,d,f * 12 / batteryVoltageSensor.getVoltage());
         motor.setVelocityPIDFCoefficients(p,i,d,f);
         motor.setVelocity(ticksPerSec);
     }
