@@ -18,6 +18,8 @@ public class RPMTool {
 
     public double TICKS_PER_REVOLUTION = 0;
 
+    public VoltageSensor batteryVoltageSensor;
+
     private ElapsedTime time;
 
     private DcMotorEx motor;
@@ -29,7 +31,7 @@ public class RPMTool {
     private double lastTime = 0;
 
     public static double p = 25;
-    public static double i = 0.13248;
+    public static double i = 0;
     public static double d = 6;
     public static double f = 13.2481;
 
@@ -88,8 +90,8 @@ public class RPMTool {
         double ticksPerSec = targetRPM * TICKS_PER_REVOLUTION / 60;
 
         // set velocity
-//        motor.setVelocityPIDFCoefficients(p,i,d,f * 12 / batteryVoltageSensor.getVoltage());
-        motor.setVelocityPIDFCoefficients(p,i,d,f);
+//        motor.setVelocityPIDFCoefficients(p,i,d,f);
+        motor.setVelocityPIDFCoefficients(p,i,d,f * 12 / batteryVoltageSensor.getVoltage());
         motor.setVelocity(ticksPerSec);
     }
 

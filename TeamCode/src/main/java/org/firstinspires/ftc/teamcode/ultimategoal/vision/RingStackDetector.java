@@ -27,14 +27,14 @@ public class RingStackDetector extends LinearOpMode
     @Override
     public void runOpMode()
     {
-        int cameraMonitorViewId = hardwareMap.appContext
-                .getResources()
-                .getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hardwareMap.appContext.getPackageName()
-                ); // for camera preview
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+//        int cameraMonitorViewId = hardwareMap.appContext
+//                .getResources()
+//                .getIdentifier(
+//                        "cameraMonitorViewId",
+//                        "id",
+//                        hardwareMap.appContext.getPackageName()
+//                ); // for camera preview
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
         pipeline = new StackDeterminationPipeline();
         webcam.setPipeline(pipeline);
@@ -44,14 +44,14 @@ public class RingStackDetector extends LinearOpMode
         // landscape orientation, though.
         webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
-            }
-        });
+//        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+//        {
+//            @Override
+//            public void onOpened()
+//            {
+//                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
+//            }
+//        });
 
         waitForStart();
 

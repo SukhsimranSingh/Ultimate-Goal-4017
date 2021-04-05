@@ -30,22 +30,22 @@ public class UGContourRingPipelineJavaExample extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        int cameraMonitorViewId = this
-                .hardwareMap
-                .appContext
-                .getResources().getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hardwareMap.appContext.getPackageName()
-                );
+//        int cameraMonitorViewId = this
+//                .hardwareMap
+//                .appContext
+//                .getResources().getIdentifier(
+//                        "cameraMonitorViewId",
+//                        "id",
+//                        hardwareMap.appContext.getPackageName()
+//                );
         if (USING_WEBCAM) {
             camera = OpenCvCameraFactory
                     .getInstance()
-                    .createWebcam(hardwareMap.get(WebcamName.class, WEBCAM_NAME), cameraMonitorViewId);
+                    .createWebcam(hardwareMap.get(WebcamName.class, WEBCAM_NAME));
         } else {
             camera = OpenCvCameraFactory
                     .getInstance()
-                    .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+                    .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
         }
         FtcDashboard.getInstance().startCameraStream(camera, 0);
 
@@ -55,7 +55,7 @@ public class UGContourRingPipelineJavaExample extends LinearOpMode {
 
         UGContourRingPipeline.Config.setHORIZON(HORIZON);
 
-        camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
+//        camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
 
         waitForStart();
 
