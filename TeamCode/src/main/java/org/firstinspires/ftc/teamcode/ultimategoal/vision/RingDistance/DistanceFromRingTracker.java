@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.vision;
+package org.firstinspires.ftc.teamcode.ultimategoal.vision.RingDistance;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import java.util.ArrayList;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -11,9 +10,13 @@ import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvTracker;
+
+import java.util.ArrayList;
+
 @Config
-public class DistanceFromPaperTracker extends OpenCvTracker {
+public class DistanceFromRingTracker extends OpenCvPipeline {
 
   /**
    * The hand pre-calculated value of the focal length for calculating the distance using @see #computeDistance()
@@ -35,27 +38,27 @@ public class DistanceFromPaperTracker extends OpenCvTracker {
   private final MatOfPoint2f largestContour2f = new MatOfPoint2f();
 
   /**
-   * The bounds of the detected piece of paper
+   * The bounds of the detected piece of ring
    */
   public RotatedRect bounds = new RotatedRect();
 
   /**
-   * Class Constructor for the paper distance detection pipeline
+   * Class Constructor for the ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    */
-  DistanceFromPaperTracker(double pctThreshold) {
+  DistanceFromRingTracker(double pctThreshold) {
     pctBoundsThreshold = pctThreshold;
   }
 
   /**
-   * Class Constructor for the paper distance detection pipeline
+   * Class Constructor for the ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    * @param thresholdThresh threshold for the threshold step of the pipeline
    * @param thresholdMaxVal threshold maximum value for the threshold step of the pipeline
    */
-  public DistanceFromPaperTracker(
+  public DistanceFromRingTracker(
     double pctThreshold,
     int thresholdThresh,
     int thresholdMaxVal
@@ -66,7 +69,7 @@ public class DistanceFromPaperTracker extends OpenCvTracker {
   }
 
   /**
-   * Class Constructor for paper distance detection pipeline
+   * Class Constructor for ring distance detection pipeline
    *
    * @param pctThreshold percent threshold for determining false positives
    * @param thresholdThresh threshold for the threshold step of the pipeline
@@ -74,7 +77,7 @@ public class DistanceFromPaperTracker extends OpenCvTracker {
    * @param cannyMinThreshold canny edge detection minimum threshold for the canny step
    * @param cannyMaxThreshold canny edge detection maximum threshold for the canny step
    */
-  public DistanceFromPaperTracker(
+  public DistanceFromRingTracker(
     double pctThreshold,
     int thresholdThresh,
     int thresholdMaxVal,
@@ -153,15 +156,15 @@ public class DistanceFromPaperTracker extends OpenCvTracker {
   }
 
   /**
-   * Returns the distance from the detected paper in inches
+   * Returns the distance from the detected ring in inches
    * Formula used is D’ = (W x F) / P
    *
-   * @return double the computed distance from the white paper on screen in inches
+   * @return double the computed distance from the white ring on screen in inches
    */
   public double computefocalLength(){
-    return (bounds.size.width * distance) / 11;
+    return (bounds.size.width * distance) / 5;
   }
   public double computeDistance() {
-    return (11 * focalLength) / bounds.size.width;
+    return (5 * focalLength) / bounds.size.width;
   }
 }

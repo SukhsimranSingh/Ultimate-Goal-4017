@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.vision;
+package org.firstinspires.ftc.teamcode.ultimategoal.vision.RingStackDetermination;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 @Disabled
 

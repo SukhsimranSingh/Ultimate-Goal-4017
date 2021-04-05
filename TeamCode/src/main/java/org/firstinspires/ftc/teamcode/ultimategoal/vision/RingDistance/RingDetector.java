@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.vision;
+package org.firstinspires.ftc.teamcode.ultimategoal.vision.RingDistance;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -15,28 +14,32 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp
-public class RingStackDetector extends LinearOpMode
+public class RingDetector extends LinearOpMode
 {
     OpenCvCamera webcam;
-    StackDeterminationPipeline pipeline;
+    StackDeterminationPipeline stackDetector;
+    DistanceFromRingTracker distanceDetector;
+    OpenCvPipeline pipeline;
+    enum Mode {
+        STACK,
+        DISTANCE
+    }
+    Mode currentMode = Mode.DISTANCE;
+
 
     @Override
     public void runOpMode()
     {
-//        int cameraMonitorViewId = hardwareMap.appContext
-//                .getResources()
-//                .getIdentifier(
-//                        "cameraMonitorViewId",
-//                        "id",
-//                        hardwareMap.appContext.getPackageName()
-//                ); // for camera preview
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"));
         FtcDashboard.getInstance().startCameraStream(webcam, 0);
-        pipeline = new StackDeterminationPipeline();
+        stackDetector = new StackDeterminationPipeline();
+        distanceDetector = new DistanceFromRingTracker(
+                0.5
+        );
+        pipeline = distanceDetector;
         webcam.setPipeline(pipeline);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
@@ -44,23 +47,55 @@ public class RingStackDetector extends LinearOpMode
         // landscape orientation, though.
         webcam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-//        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-//        {
-//            @Override
-//            public void onOpened()
-//            {
-//                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
-//            }
-//        });
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240,  OpenCvCameraRotation.UPRIGHT);
+            }
+        });
+
+
+        telemetry = FtcDashboard.getInstance().getTelemetry();
 
         waitForStart();
+        if (isStopRequested()) return;
 
-        while (opModeIsActive())
-        {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
-            telemetry.update();
+        while (opModeIsActive() && !isStopRequested()) {
+            switch (currentMode){
+                case DISTANCE:
+                    telemetry.addData("FPS", webcam.getFps());
+                    telemetry.addData("Pipeline (ms)", webcam.getPipelineTimeMs());
+                    telemetry.addData(
+                            "Total Frame time (ms)",
+                            webcam.getTotalFrameTimeMs()
+                    );
+                    telemetry.addData(
+                            "W, H (px)",
+                            distanceDetector.bounds.size.width +
+                                    ", " +
+                                    distanceDetector.bounds.size.height
+                    );
+                    telemetry.addData("distance (in)", distanceDetector.computeDistance());
+                    telemetry.addData("focalLength", distanceDetector.computefocalLength());
+                    telemetry.update();
+                    if (gamepad1.a) {
+                        pipeline = stackDetector;
+                        currentMode = Mode.DISTANCE;
+                    }
+                    break;
+                case STACK:
+                    telemetry.addData("Analysis", stackDetector.getAnalysis());
+                    telemetry.addData("Position", stackDetector.position);
+                    telemetry.update();
+                    if (gamepad1.b) {
+                        pipeline = distanceDetector;
+                        currentMode = Mode.DISTANCE;
+                    }
+                    break;
 
+            }
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
         }
@@ -87,10 +122,10 @@ public class RingStackDetector extends LinearOpMode
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(154,98);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0,0);
 
-        static final int REGION_WIDTH = 35;
-        static final int REGION_HEIGHT = 25;
+        static final int REGION_WIDTH = 320;
+        static final int REGION_HEIGHT = 240;
 
         final int FOUR_RING_THRESHOLD = 140;
         final int ONE_RING_THRESHOLD = 130;
@@ -187,5 +222,11 @@ public class RingStackDetector extends LinearOpMode
         {
             return avg1;
         }
+
+        public void getFocalLength(double realDistance){
+
+        }
     }
+
+
 }

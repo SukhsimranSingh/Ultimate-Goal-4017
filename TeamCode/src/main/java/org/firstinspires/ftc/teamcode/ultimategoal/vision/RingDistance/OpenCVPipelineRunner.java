@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ultimategoal.vision;
+package org.firstinspires.ftc.teamcode.ultimategoal.vision.RingDistance;
 
 import com.qualcomm.robotcore.hardware.*;
 
