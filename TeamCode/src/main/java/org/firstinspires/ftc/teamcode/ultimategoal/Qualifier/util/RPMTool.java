@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.ultimategoal.Qualifier.util;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
@@ -17,8 +16,6 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 public class RPMTool {
 
     public double TICKS_PER_REVOLUTION = 0;
-
-    public VoltageSensor batteryVoltageSensor;
 
     private ElapsedTime time;
 
@@ -90,8 +87,8 @@ public class RPMTool {
         double ticksPerSec = targetRPM * TICKS_PER_REVOLUTION / 60;
 
         // set velocity
-//        motor.setVelocityPIDFCoefficients(p,i,d,f);
-        motor.setVelocityPIDFCoefficients(p,i,d,f * 12 / batteryVoltageSensor.getVoltage());
+        motor.setVelocityPIDFCoefficients(p,i,d,f);
+
         motor.setVelocity(ticksPerSec);
     }
 
