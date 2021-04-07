@@ -210,7 +210,7 @@ public class AutoChamps extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(0, -52))
                 .build();
         Trajectory fourRingI = drive.trajectoryBuilder(fourRingH.end())// drop wobble
-                .lineToSplineHeading(new Pose2d(48, -38, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(50, -38, Math.toRadians(180)))
                 .build();
         Trajectory fourRingJ = drive.trajectoryBuilder(fourRingI.end()) //park
                 .lineTo(new Vector2d(12, -38))
