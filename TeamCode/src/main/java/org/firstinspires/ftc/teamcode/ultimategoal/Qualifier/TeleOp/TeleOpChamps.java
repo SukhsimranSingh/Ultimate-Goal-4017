@@ -139,6 +139,9 @@ public class TeleOpChamps extends LinearOpMode {
                                     -gamepad1.right_stick_x
                             )
                     );
+                    if (gamepad2.a){
+                        drive.setPoseEstimate(new Pose2d(63,-63,Math.toRadians(0)));
+                    }
 
                     if (gamepad1.a) {
                         // If the A button is pressed on gamepad1, we generate a splineTo()

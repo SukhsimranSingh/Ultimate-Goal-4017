@@ -71,7 +71,7 @@ public class SampleMecanumDriveCancelable extends MecanumDrive {
 
     public static double VX_WEIGHT = 1.15;
     public static double VY_WEIGHT = 1.15;
-    public static double OMEGA_WEIGHT = 1.15;
+    public static double OMEGA_WEIGHT = 1;
 
     public static int POSE_HISTORY_LIMIT = 100;
 
