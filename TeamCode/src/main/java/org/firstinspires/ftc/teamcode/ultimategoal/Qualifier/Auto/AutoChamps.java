@@ -149,10 +149,10 @@ public class AutoChamps extends LinearOpMode {
                 .lineTo(new Vector2d(18, -36))
                 .build();
         Trajectory zeroRingG = drive.trajectoryBuilder(zeroRingF.end())//lining up
-                .strafeTo(new Vector2d(-48,-36))
+                .strafeTo(new Vector2d(-47,-36))
                 .build();
         Trajectory zeroRingH = drive.trajectoryBuilder(zeroRingG.end())// second wobble
-                .lineToConstantHeading(new Vector2d(18, -35))
+                .lineToConstantHeading(new Vector2d(17, -35))
                 .build();
 
 
@@ -175,10 +175,10 @@ public class AutoChamps extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(-16, -36, Math.toRadians(0)))
                 .build();
         Trajectory oneRingG = drive.trajectoryBuilder(oneRingF.end())//
-                .lineToSplineHeading(new Pose2d(-50, -36, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-44, -33, Math.toRadians(180)))
                 .build();
         Trajectory oneRingH = drive.trajectoryBuilder(oneRingG.end())// second wobble
-                .lineToSplineHeading(new Pose2d(12, -36, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(12, -38, Math.toRadians(-90)))
                 .build();
 
 
@@ -195,24 +195,26 @@ public class AutoChamps extends LinearOpMode {
                 .strafeTo(new Vector2d(-12, -2))
                 .build();
         Trajectory fourRingDa = drive.trajectoryBuilder(fourRingD.end())//drop wobble goal
-                .lineToSplineHeading(new Pose2d(-3,-36, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-3,-46, Math.toRadians(180)))
                 .build();
         Trajectory fourRingE = drive.trajectoryBuilder(fourRingDa.end())//drop wobble goal
-                .lineToConstantHeading(new Vector2d(54, -36))
+                .lineToSplineHeading(new Pose2d(54,-46, Math.toRadians(180)))
                 .build();
         Trajectory fourRingF = drive.trajectoryBuilder(fourRingE.end())//ring stack
-                .lineToSplineHeading(new Pose2d(-24, -36, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(0, -54, Math.toRadians(94)))
                 .build();
         Trajectory fourRingG = drive.trajectoryBuilder(fourRingF.end())//second wobble
-                .lineToSplineHeading(new Pose2d(-48, -36, Math.toRadians(180)))
+                .lineToConstantHeading(new Vector2d(-35, -57))
                 .build();
-        Trajectory fourRingH = drive.trajectoryBuilder(fourRingG.end())//drop second wobble
-                .lineToConstantHeading(new Vector2d(50, -36))
+        Trajectory fourRingH = drive.trajectoryBuilder(fourRingG.end())//ring stack
+                .lineToConstantHeading(new Vector2d(0, -52))
                 .build();
         Trajectory fourRingI = drive.trajectoryBuilder(fourRingH.end())// drop wobble
-                .lineTo(new Vector2d(12, -36))
+                .lineToSplineHeading(new Pose2d(44, -38, Math.toRadians(180)))
                 .build();
-
+        Trajectory fourRingJ = drive.trajectoryBuilder(fourRingI.end()) //park
+                .lineTo(new Vector2d(12, -38))
+                .build();
         //common path
         Trajectory launchLine = drive.trajectoryBuilder(startPose)//to launch line
                 .lineTo(new Vector2d(-12,-24))
@@ -279,18 +281,18 @@ public class AutoChamps extends LinearOpMode {
         telemetry.addData("RPM", rpm.getRPM());
         telemetry.update();
         //REAL AUTO
-        if (pipeline.getHeight() == UGContourRingPipeline.Height.ZERO) {
+        if (pipeline.getHeight() == UGContourRingPipeline.Height.ZERO) {// TODO CHAGNGE TO ZERO
             rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(zeroRingA);
             drive.followTrajectory(zeroRingB); //powershot 1
-            sleep(1200);
+            sleep(750);
             trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
             sleep(500);
             trigger.setPosition(TRIGGER_PRESSED);//launch
             sleep(550);
             trigger.setPosition(TRIGGER_UNPRESSED);
             drive.followTrajectory(zeroRingC); //powershot 2
-            sleep(500);
+            sleep(550);
             trigger.setPosition(TRIGGER_PRESSED);//launch
             sleep(550);
             trigger.setPosition(TRIGGER_UNPRESSED);
@@ -301,101 +303,108 @@ public class AutoChamps extends LinearOpMode {
             trigger.setPosition(TRIGGER_UNPRESSED);
             rpm.setRPM(0);
             drive.followTrajectory(zeroRingE);//wobble goal 1
-//            armPower(-.8, 1.3); //arm down
-//            sleep(500);
-//            grabber(GRABBER_OPEN);
+            armPower(-.8, 1.45); //arm down
+            sleep(500);
+            grabber(GRABBER_OPEN);
             drive.followTrajectory(zeroRingF);
             drive.followTrajectory(zeroRingG);//second wobble
-//            sleep(500);
-//            grabber(GRABBER_CLOSED);
-//            sleep(1000);
-//            armPower(.7,.8);//arm up
+            sleep(500);
+            grabber(GRABBER_CLOSED);
+            sleep(1000);
+            armPower(.7,.7);//arm up
             drive.followTrajectory(zeroRingH);// drop 2nd wobble and park
-//            armPower(-.7, .7);//arm down
-//            grabber(GRABBER_OPEN);
-//            sleep(500);
-//            armPower(.7,.7);//arm up
+            armPower(-.7, .7);//arm down
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
             sleep(6000);
 
-        } else if (pipeline.getHeight() == UGContourRingPipeline.Height.ONE) {
-//            rpm.setRPM(powerShotRPM);//launcher wheel rev up
+        } else if (pipeline.getHeight() == UGContourRingPipeline.Height.ONE) {//TODO CHANGE TO ONE
+            rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(oneRingA);
             drive.followTrajectory(oneRingB); //powershot 1
-//            sleep(1200);
-//            trigger.setPosition(.8);//set to launch
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
+           sleep(750);
+            trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
             drive.followTrajectory(oneRingC); //powershot 2
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
+            sleep(550);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
             drive.followTrajectory(oneRingD); //powershot 3
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            rpm.setRPM(0);
             drive.followTrajectory(oneRingE);//drop wobble 1
-//            armPower(-.5, 2.2); //arm down
-//            sleep(250);
-//            grabber(GRABBER_OPEN);
-//            armPower(.5,1.1);//arm up
-//            drive.followTrajectory(oneRingF);//second wobble
-//            armPower(-.6, 1);//arm down
-            drive.followTrajectory(oneRingH);//ringstack
-//            grabber(GRABBER_CLOSED);
-//            sleep(750);
-//            armPower(.5,1);//arm up
-            drive.followTrajectory(oneRingG);//drop wobble 2
-//            armPower(-.5, 1);//arm down
-//            sleep(500);
-//            grabber(GRABBER_OPEN);
-//            sleep(500);
-//            armPower(.5,1);//arm up
+            armPower(-.8, 1.4); //arm down
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
+            rpm.setRPM(HIGHGOAL + 100);
+            intake.setPower(-1);
+            drive.followTrajectory(oneRingF);//ringstack
+            intake(1, .5);
+            sleep(750);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            rpm.setRPM(0);
+            drive.followTrajectory(oneRingG);//second wobble
+            armPower(-.7, .75);//arm down
+            sleep(500);
+            grabber(GRABBER_CLOSED);
+            sleep(750);
+            armPower(.7,.7);//arm up
+            drive.followTrajectory(oneRingH);//drop wobble 2 and park
+            armPower(-.7,.7);//arm down
+            grabber(GRABBER_OPEN);
+            sleep(500);
+            armPower(.7,.7);//arm up
             sleep(6000);
         } else if (pipeline.getHeight() == UGContourRingPipeline.Height.FOUR) {
-//            rpm.setRPM(powerShotRPM);//launcher wheel rev up
+            rpm.setRPM(powerShotRPM);//launcher wheel rev up
             drive.followTrajectory(fourRingA);
             drive.followTrajectory(fourRingB); //launch rings
-//            sleep(1200);
-//            trigger.setPosition(.8);//set to launch
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
-//            drive.followTrajectory(fourRingC); //launch rings
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
-//            drive.followTrajectory(fourRingD); //launch rings
-//            sleep(500);
-//            trigger.setPosition(0.1);//launch
-//            sleep(550);
-//            trigger.setPosition(.9);
-//            rpm.setRPM(0);
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);//set to launch
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            drive.followTrajectory(fourRingC); //powershot 2
+            sleep(550);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            drive.followTrajectory(fourRingD); //powershot 3
+            sleep(500);
+            trigger.setPosition(TRIGGER_PRESSED);//launch
+            sleep(550);
+            trigger.setPosition(TRIGGER_UNPRESSED);
+            rpm.setRPM(0);
             drive.followTrajectory(fourRingDa);
             drive.followTrajectory(fourRingE);//wobble goal 1
-//            armPower(-.8, 1.2); //arm down
-//            grabber(GRABBER_OPEN);
-//            sleep(600);
-//            armPower(.7, .75);//arm up
+            armPower(-.8, 1.25); //arm down
+            grabber(GRABBER_OPEN);
+            sleep(250);
+            armPower(.7, .7);//arm up
             drive.followTrajectory(fourRingF);//ring stack
             drive.followTrajectory(fourRingG);//second wobble
-//            armPower(-.8, .8);//arm DOWN
-//            sleep(250);
-//            grabber(GRABBER_CLOSED);
-//            sleep(600);
-//            armPower(.7, .8);//arm up
+            armPower(-.85, .85);//arm DOWN
+            grabber(GRABBER_CLOSED);
+            sleep(500);
+            armPower(.7, .8);//arm up
             drive.followTrajectory(fourRingH);//drop second wobble
             drive.followTrajectory(fourRingI);
-//            armPower(-.7, .7);//arm down
-//            sleep(250);
-//            grabber(GRABBER_OPEN);
-//            sleep(500);
-//            armPower(.7, .7);//arm up
+            armPower(-.7, .7);//arm down
+            grabber(GRABBER_OPEN);
+            sleep(250);
+            armPower(.7, .7);//arm up
+            drive.followTrajectory(fourRingJ);
             sleep(6000);
         }
 
@@ -499,7 +508,7 @@ public class AutoChamps extends LinearOpMode {
     }
     public void armPower(double power, double Time){
         double time = runtime.seconds();
-        while (runtime.seconds()<time + Time){
+        while (runtime.seconds()<time + Time && opModeIsActive()){
             arm.setPower(power);
         }
         arm.setPower(0);
@@ -523,11 +532,13 @@ public class AutoChamps extends LinearOpMode {
         sleep(250);
 
     }
-    public void intake(double power){
-        while (opModeIsActive()){
-            arm.setPower(-power);
+    public void intake(double power, double time){
+        double Time = runtime.seconds();
+        while (runtime.seconds()<time + Time && opModeIsActive()){
+//            power = Math.abs(power);
+            intake.setPower(-power);
         }
-        arm.setPower(0);
+        intake.setPower(0);
     }
 
 }
