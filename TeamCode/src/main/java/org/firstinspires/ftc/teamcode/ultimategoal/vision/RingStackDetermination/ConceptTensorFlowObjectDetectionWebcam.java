@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
@@ -114,6 +115,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
                         telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
                                 recognition.getRight(), recognition.getBottom());
                         getFocalLength(distance, recognition.getWidth());
+                        telemetry.addData("angle", recognition.estimateAngleToObject(AngleUnit.RADIANS));
                       }
 
                       telemetry.update();
